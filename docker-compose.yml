@@ -1,8 +1,9 @@
 version: '3'
 services:
   omservice:
-    image: 192.168.13.14:5000/wire-mock:latest
-    #container_name: wes-omservice
+    build:
+        context: .
+        dockerfile: mock/Dockerfile
     volumes:
         - ./mock/OM/:/mock_mapping
     environment:
@@ -28,5 +29,5 @@ services:
 #        context: .
 #        dockerfile: src/main/docker/Dockerfile
 
-networks:
-  frontend:
+#networks:
+#  frontend:
