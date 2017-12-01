@@ -3,7 +3,7 @@ MAINTAINER Tho Nguyen <thonguyen@fortna.com>
 
 VOLUME /mock_mapping
 
-RUN curl http://10.240.17.13:80/artifactory/fortna-product-tools/wiremock/wiremock-standalone/wiremock-standalone-2.10.1.jar --output wiremock-standalone.jar
+RUN curl http://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-standalone/2.12.0/wiremock-standalone-2.12.0.jar --output wiremock-standalone.jar
 RUN sh -c 'touch /wiremock-standalone.jar'
 
 ENV RUNNING_PORT=6500
