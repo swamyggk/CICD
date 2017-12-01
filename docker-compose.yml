@@ -29,5 +29,5 @@ services:
 #        context: .
 #        dockerfile: src/main/docker/Dockerfile
 
-#networks:
-#  frontend:
+networks:
+  frontend:
