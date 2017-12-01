@@ -1,0 +1,32 @@
+version: '3'
+services:
+  omservice:
+    image: 192.168.13.14:5000/wire-mock:latest
+    #container_name: wes-omservice
+    volumes:
+        - ./mock/OM/:/mock_mapping
+    environment:
+        - RUNNING_PORT=38080
+    networks:
+      frontend:
+          aliases:
+            - omserver
+  cpservice:
+    build: 
+        context: .
+        dockerfile: src/main/docker/Dockerfile
+        
+    networks:
+      frontend:
+        aliases:
+            - cpserver
+    extra_hosts:
+      - "dbserver:192.168.13.17"
+        
+#  robot:
+#    build:
+#        context: .
+#        dockerfile: src/main/docker/Dockerfile
+
+networks:
+  frontend:
