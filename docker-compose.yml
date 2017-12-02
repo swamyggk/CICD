@@ -28,6 +28,7 @@ services:
     build:
         context: .
         dockerfile: src/robot/Dockerfile
+    image: robotfort
 
 networks:
   frontend:
