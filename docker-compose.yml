@@ -24,10 +24,10 @@ services:
     extra_hosts:
       - "dbserver:192.168.13.17"
         
-#  robot:
-#    build:
-#        context: .
-#        dockerfile: src/main/docker/Dockerfile
+  robot:
+    build:
+        context: .
+        dockerfile: src/robot/Dockerfile
 
 networks:
   frontend:
