@@ -4,10 +4,10 @@ Resource          ../keywords/common.robot
 Library           DatabaseLibrary
 
 *** Variables ***
-${hostname}       192.168.13.14
-${port}           8082
-${uri}            /api/lms/listWorker
-${dbConnectionStr}    'cicd_sample/cicd_sample@192.168.13.14:1521/FORTNAWCS'
+${hostname}       cpserver
+${port}           6400
+${uri}            /api/product/list
+${dbConnectionStr}    'cicd_sample/cicd_sample@52.67.80.187:1521/GGKF'
 
 *** Test Cases ***
 Connect To Database And Execute Query

@@ -9,5 +9,5 @@ RUN sh -c 'touch /wiremock-standalone.jar'
 #ENV RUNNING_PORT=6500
 RUN echo "java -jar /wiremock-standalone.jar --port=\$RUNNING_PORT --root-dir=/mock_mapping --global-response-templating" > run.sh
 RUN chmod +x run.sh
-RUN cat run.sh
+#RUN cat run.sh
 ENTRYPOINT ["/bin/bash", "./run.sh" ]

@@ -1,34 +1,45 @@
 version: '3'
 services:
-  omservice:
-    build:
-        context: .
-        dockerfile: mock/Dockerfile
+  robot:  
+    build:    
+      context: .
+      dockerfile: RFW/Dockerfile
     volumes:
-        - ./mock/OM/:/mock_mapping
-    environment:
-        - RUNNING_PORT=38080
-    networks:
-      frontend:
-          aliases:
-            - omserver
-  cpservice:
-    build: 
-        context: .
-        dockerfile: src/main/docker/Dockerfile
-        
+      - /home/ubuntu/tmp:/robotframework-databaselibrary-1.0.1
     networks:
       frontend:
         aliases:
-            - cpserver
-    extra_hosts:
-      - "dbserver:192.168.13.17"
-        
-  robot:
+          - robotsever  
+    depends_on:
+      - cpservice
+    command: >
+      /bin/bash -c "
+        /test.sh
+        "
+  cpservice:
     build:
-        context: .
-        dockerfile: src/robot/Dockerfile
-    image: robotfort
+      context: .
+      dockerfile: src/main/docker/Dockerfile
+    networks:
+      frontend:
+        aliases:
+          - cpserver
+    extra_hosts:
+      - "dbserver:52.67.80.187"
+    depends_on:
+      - omservice
+  omservice:
+    build:
+      context: .
+      dockerfile: mock/Dockerfile
+    volumes:
+      - ./mock/OM/:/mock_mapping
+    environment:
+      - RUNNING_PORT=38080
+    networks:
+      frontend:
+        aliases:
+            - omserver
 
 networks:
   frontend:
