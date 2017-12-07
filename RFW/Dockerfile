@@ -1,8 +1,8 @@
-FROM baserobo
+FROM swamykonanki/baserobo
 ADD RFW/robot /robot
-ADD RFW/test.sh /
+ADD RFW/run.sh /
 RUN chmod -R +x /robot
-RUN chmod +x /test.sh
-CMD ["/test.sh"]
+RUN chmod +x /run.sh
+#CMD ["/test.sh"]
 
 
