@@ -8,7 +8,7 @@ services:
       dockerfile: RFW/Dockerfile
     image: ${robot_image_name}
     volumes:
-      - /home/ubuntu/tmp:/robotframework-databaselibrary-1.0.1
+      - /home/robot/${robot_result_folder}:/robotframework-databaselibrary-1.0.1
     networks:
       frontend:
         aliases:
