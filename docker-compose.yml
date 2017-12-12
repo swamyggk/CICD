@@ -25,6 +25,10 @@ services:
     build:
       context: .
       dockerfile: src/main/docker/Dockerfile
+      args:
+        jarfile_name: ${jarfile_name}
+        port: ${port}
+        username: ${username}
     image: ${cp_image_name}
     networks:
       frontend:

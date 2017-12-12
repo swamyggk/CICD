@@ -1,14 +1,25 @@
 FROM openjdk:8-jre-alpine
 MAINTAINER GGK_DevOps
+ARG jarfile_name
+ARG port
+ARG username
+ARG db_details="cicd_"${username}
 
 VOLUME /tmp
 VOLUME /logs
 VOLUME /configs
 
 ADD src/main/docker/wait-for-it.sh /wait-for-it.sh
-ADD target/sampleproject-0.0.1-SNAPSHOT.jar app.jar
-RUN sh -c 'touch /app.jar'
+ADD target/${jarfile_name} app.jar
+ENV CP_JAVA_OPTS="-Dserver.port=${port} -Dspring.datasource.username=${db_details} -Dspring.datasource.password=${db_details}"
+
 RUN chmod +x wait-for-it.sh
-ENV JAVA_OPTS=""
-ENTRYPOINT [ "java","-jar","/app.jar" ]
+RUN echo "java -jar \$CP_JAVA_OPTS /app.jar" > run.sh
+RUN chmod +x run.sh
+
+ENTRYPOINT ["sh", "./run.sh" ]
+
+
+
+
 
