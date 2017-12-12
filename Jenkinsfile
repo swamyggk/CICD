@@ -11,6 +11,12 @@ def buildInfo = 'null'
 //Creating an Artifactory Maven Build instance
 def rtMaven = Artifactory.newMavenBuild()
 
+/******reading jar file name*********/
+def getMavenBuildArtifactName() {
+ pom = readMavenPom file: 'pom.xml'
+ return "${pom.artifactId}-${pom.version}.${pom.packaging}"
+}
+
 
 /******************** Notifying SUCCESSFUL buildInfo **********************/
 def notifySuccessful(){
@@ -33,11 +39,14 @@ node {
      
 	/*************** Git Checkout ***************/
 	stage ('Checkout') {
-		//checkout scm	
-		checkout([$class: 'GitSCM', branches: [[name: '*/testing']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'c0c5e22f-9121-4734-922d-d8bfb1c4e339', url: 'https://padlgithubggk1.sw.fortna.net/FortnaWES/SampleProjectForCICD.git']]])
+		checkout scm	
+		//checkout([$class: 'GitSCM', branches: [[name: '*/testing']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'c0c5e22f-9121-4734-922d-d8bfb1c4e339', url: 'https://padlgithubggk1.sw.fortna.net/FortnaWES/SampleProjectForCICD.git']]])
 	}
-
-	/*************** Building the application ***************/
+    
+    /************ getting jarfile name ************/
+    def jar_name=getMavenBuildArtifactName()
+	
+    /*************** Building the application ***************/
 	stage ('Maven Build') {
 	
 		//Downloading dependencies
@@ -64,10 +73,10 @@ node {
 	
 	/*************** Robot Frame work results ***************/
 	stage ('Docker Deploy and RFW') {
-	/*******Locking Resource ********/
+   	/*******Locking Resource ********/
 		lock('Compose-resource-lock') {
-		/*************** Docker Compose ***************/
-		sh ''' username=${BRANCH_NAME} /usr/local/bin/docker-compose up -d
+        		/*************** Docker Compose ***************/
+		sh ''' jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d
 			./clean_up.sh'''
 			def content = readFile './.env'
   			Properties properties = new Properties()

@@ -2,8 +2,7 @@ FROM openjdk:8-jre-alpine
 MAINTAINER GGK_DevOps
 ARG jarfile_name
 ARG port
-ARG username
-ARG db_details="cicd_"${username}
+ARG db_details
 
 VOLUME /tmp
 VOLUME /logs
