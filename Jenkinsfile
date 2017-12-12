@@ -40,11 +40,11 @@ node {
 	/*************** Git Checkout ***************/
 	stage ('Checkout') {
 		checkout scm	
-		//checkout([$class: 'GitSCM', branches: [[name: '*/testing']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'c0c5e22f-9121-4734-922d-d8bfb1c4e339', url: 'https://padlgithubggk1.sw.fortna.net/FortnaWES/SampleProjectForCICD.git']]])
+		//checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/yerriswamykonanki/CICD.git']]])
 	}
     
     /************ getting jarfile name ************/
-    def jar_name=getMavenBuildArtifactName()
+    def jar_name = getMavenBuildArtifactName()
 	
     /*************** Building the application ***************/
 	stage ('Maven Build') {
@@ -76,8 +76,8 @@ node {
    	/*******Locking Resource ********/
 		lock('Compose-resource-lock') {
         		/*************** Docker Compose ***************/
-		sh ''' jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d
-			./clean_up.sh'''
+		sh """jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d
+			./clean_up.sh"""
 			def content = readFile './.env'
   			Properties properties = new Properties()
   			InputStream contents = new ByteArrayInputStream(content.getBytes());
