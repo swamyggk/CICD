@@ -3,8 +3,6 @@
 /************************ Environment Variables **************************/
 def robot_result_folder = ""
 
-def SonarHostName = ""
-
 def server = Artifactory.server 'server1'		//Artifactory server instance declaration. 'server1' is the Server ID given to Artifactory server in Jenkins
 
 def buildInfo = 'null'						//buildInfo variable
@@ -125,7 +123,7 @@ node {
 	try{
 		stage ('Docker Deploy and RFW') {
 		/*******Locking Resource ********/
-			SonarHostName = lockName()
+			def SonarHostName = lockName()
 			lock('SonarHostName') {
 			sh '''echo 'The value is'
 			echo Hi
