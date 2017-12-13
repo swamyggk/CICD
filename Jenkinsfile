@@ -127,11 +127,11 @@ node {
 		/*******Locking Resource ********/
 			SonarHostName = lockName()
 			lock('SonarHostName') {
-			echo 'The value is'
+			sh '''echo 'The value is'
 			echo Hi
 			println SonarHostName
 			println SonarHostName
-			println SonarHostName
+			println SonarHostName'''
 					/*************** Docker Compose ***************
 			sh """jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d
 				./clean_up.sh"""
