@@ -177,7 +177,7 @@ node {
 		notifyFailure(Reason)
 		sh 'exit 1'
 	}
-	
+	 
 	/*************** Build Promotion Section ***************
 	try{
 		stage ('Build Promotions') {
