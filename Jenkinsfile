@@ -11,7 +11,7 @@ def rtMaven = Artifactory.newMavenBuild()	//Creating an Artifactory Maven Build 
 
 def Reason = "JOB FAILED"
 
-static def lockVar = 'null'
+static def lockVar = "hello"
 
 /******reading jar file name*********/
 def getMavenBuildArtifactName() {
