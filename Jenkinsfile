@@ -118,12 +118,6 @@ node {
 			Reason = "Docker Deployment or RFW Failed"
 			def SonarHostName = lockName()
 			lock(SonarHostName) {
-			sh '''echo 'The value is'
-			echo Hi'''
-			println SonarHostName
-			println SonarHostName
-			println SonarHostName
-				sh ' exit 1'
 					/*************** Docker Compose ***************
 			sh """jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d
 				./clean_up.sh"""
