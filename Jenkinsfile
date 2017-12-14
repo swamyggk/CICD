@@ -196,11 +196,11 @@ node {
 		sh 'echo ${BUILD_STATUS}'
 		notifyFailure(Reason)
 		sh 'exit 1'
-	}
+	}*/
 	
 	stage ('Email Notifications') {
 		notifySuccessful() 
-	}*/
+	}
 }
 	catch(Exception e)
 	{
