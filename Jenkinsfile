@@ -67,12 +67,12 @@ emailext (
 }
 
 def notifyFailure(def Reason){
-println "Failed Reason: ${Reason}"
+println "********Failed Reason: ${Reason}********"
 emailext (
 	attachLog: true, attachmentsPattern: '*.html, output.xml', body: '''<span style=\'line-height: 22px; font-family: Candara; padding: 10.5px; font-size: 15px; word-break: break-all; word-wrap: break-word; \'>
 	<h1><FONT COLOR=red>$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS</FONT></h1>
 	vjgjgvjvgjjk
-  	<h2>${BUILD_LOG_REGEX, regex="Failed Reason", linesBefore=0, linesAfter=1, maxMatches=1, showTruncatedLines=false, escapeHtml=true}</h2>
+  	<h2>${BUILD_LOG_REGEX, regex="********Failed Reason:", linesBefore=0, linesAfter=1, maxMatches=1, showTruncatedLines=false, escapeHtml=true}</h2>
 	<p><h2><a href="$BUILD_URL">Click Here</a> to view build result</h2><br><h3>Please find below, the build logs and other files.</h3></p>
 	</span>''', subject: '$DEFAULT_SUBJECT', to: 'sneha.kailasa@ggktech.com'
 	)
