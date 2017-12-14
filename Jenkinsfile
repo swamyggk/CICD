@@ -30,6 +30,7 @@ properties.load(contents)
 contents = null
 def branch_name1 = properties.branch_name
 println "${branch_name1}" 
+println lockVar
 /*if(JobName.contains('PR-'))
 {
  def index = JobName.indexOf("/");
