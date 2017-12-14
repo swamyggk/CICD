@@ -55,6 +55,7 @@ else
 }
 //println SonarHostName
 //println JobName
+println lockVar
 return "${SonarHostName}"
 }
 /******************** Notifying buildInfo **********************/
