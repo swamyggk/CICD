@@ -126,10 +126,10 @@ node {
 			def SonarHostName = lockName()
 			lock(SonarHostName) {
 			sh '''echo 'The value is'
-			echo Hi
+			echo Hi'''
 			println SonarHostName
 			println SonarHostName
-			println SonarHostName'''
+			println SonarHostName
 					/*************** Docker Compose ***************
 			sh """jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d
 				./clean_up.sh"""
