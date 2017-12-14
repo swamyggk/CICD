@@ -202,5 +202,13 @@ node {
 		notifySuccessful() 
 	}*/
 }
+	catch(Exception e)
+	{
+		//def Reason = "Report Creation failed"
+		currentBuild.result = "FAILURE"
+		sh 'echo ${BUILD_STATUS}'
+		notifyFailure(Reason)
+		sh 'exit 1'
+	}
 }
 	
