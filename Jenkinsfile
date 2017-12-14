@@ -11,37 +11,16 @@ def rtMaven = Artifactory.newMavenBuild()	//Creating an Artifactory Maven Build 
 
 def Reason = "JOB FAILED"
 
+def lockVar = "hello"
+
+def SonarHostName
+
 /******reading jar file name*********/
 def getMavenBuildArtifactName() {
  pom = readMavenPom file: 'pom.xml'
  return "${pom.artifactId}-${pom.version}.${pom.packaging}"
 }
 
-/******************* Reading branch name for Sonar parameters and Lock resource **************/
-def lockName() {
-def JobName = "${JOB_NAME}"
-//def SonarHostName
-def content = readFile './.env'
-Properties properties = new Properties()
-InputStream contents = new ByteArrayInputStream(content.getBytes());
-properties.load(contents)
-contents = null
-def branch_name1 = properties.branch_name
-println "${branch_name1}" 
-if(JobName.contains('PR-'))
-{
- def index = JobName.indexOf("/");
- SonarHostName = JobName.substring(0 , index)+"_"+"${branch_name1}"
-}
-else
-{
- def index = JobName.indexOf("/");
- SonarHostName = JobName.substring(0 , index)+"_"+"${BRANCH_NAME}"
-}
-//println SonarHostName
-//println JobName
-return "${SonarHostName}"
-}
 /******************** Notifying buildInfo **********************/
 def notifySuccessful(){
 emailext (
@@ -112,12 +91,35 @@ node {
 	
 	
 	/*************** Robot Frame work results ***************/
+		stage ('lockVar')	{
+		def JobName = "${JOB_NAME}"
+//def SonarHostName
+def content = readFile './.env'
+Properties properties = new Properties()
+InputStream contents = new ByteArrayInputStream(content.getBytes());
+properties.load(contents)
+contents = null
+def branch_name1 = properties.branch_name
+println "${branch_name1}" 
+if(JobName.contains('PR-'))
+{
+ def index = JobName.indexOf("/");
+ lockVar = JobName.substring(0 , index)+"_"+"${branch_name1}"
+ SonarHostName = lockVar + "PR" 
+}
+else
+{
+ def index = JobName.indexOf("/");
+ SonarHostName = JobName.substring(0 , index)+"_"+"${BRANCH_NAME}"
+ lockVar = SonarHostName
+}
+
+		}
 	
 		stage ('Docker Deploy and RFW') {
 		/*******Locking Resource ********/
 			Reason = "Docker Deployment or RFW Failed"
-			def SonarHostName = lockName()
-			lock(SonarHostName) {
+			lock(lockVar) {
 			sh '''echo 'The value is'
 			echo Hi'''
 			println SonarHostName
