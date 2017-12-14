@@ -9,6 +9,8 @@ def buildInfo = 'null'						//buildInfo variable
 	
 def rtMaven = Artifactory.newMavenBuild()	//Creating an Artifactory Maven Build instance
 
+def Reason = "JOB FAILED"
+
 /******reading jar file name*********/
 def getMavenBuildArtifactName() {
  pom = readMavenPom file: 'pom.xml'
@@ -74,24 +76,20 @@ node {
 	try {
 		stage ('Checkout') {
 			//checkout scm	
+			Reason = "GIT Checkout Failed"
 			checkout([$class: 'GitSCM', branches: [[name: '*/TestBoga']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/boga5/CICD.git']]])
+			
 		}
-	}
-	catch(Exception e)
-	{
-		def Reason="Git Checkout Failed"
-		currentBuild.result = "FAILURE"
-		sh 'echo ${BUILD_STATUS}'
-		notifyFailure(Reason)
-		sh 'exit 1'
-	}
+	
+	
     
     /************ getting jarfile name ************/
     def jar_name = getMavenBuildArtifactName()
 	
     /*************** Building the application ***************
-	try {	
+	
 		stage ('Maven Build') {
+			Reason = "Maven Build Failed"
 		
 			//rtMaven.resolver server: server, releaseRepo: 'fortna_release', snapshotRepo: 'fortna_snapshot'		//Downloading dependencies
 			
@@ -110,19 +108,14 @@ node {
 				}
 			}
 		}
-	}
-	catch(Exception e){
-		def Reason = "Maven Build failed"
-		currentBuild.result = "FAILURE"
-		sh 'echo ${BUILD_STATUS}'
-		notifyFailure(Reason)
-		sh 'exit 1'
-	}
+	
+	
 	
 	/*************** Robot Frame work results ***************/
-	try{
+	
 		stage ('Docker Deploy and RFW') {
 		/*******Locking Resource ********/
+			Reason = "Docker Deployment or RFW Failed"
 			def SonarHostName = lockName()
 			lock(SonarHostName) {
 			sh '''echo 'The value is'
@@ -150,35 +143,24 @@ node {
 			 }*/
 			}
 		}
-	}
-	catch(Exception e){
-		def Reason = "Docker deploy or RFW failed"
-		currentBuild.result = "FAILURE"
-		sh 'echo ${BUILD_STATUS}'
-		notifyFailure(Reason)
-		sh 'exit 1'
-	}
+	
+	
 	
 	/*************** Pushing the artifacts***************	
-	try{
+	
 		stage ('Artifacts Deployment'){		
 			/*************** Publishing buildInfo to Artifactory ***************
+			Reason = "Artifacts Deployment Failed"
 			rtMaven.deployer.deployArtifacts buildInfo	//this should be disabled when depoyArtifacts is set to false. Otherwise, this will publish the Artifacts.
 			server.publishBuildInfo buildInfo
 		}
-	}
-	catch(Exception e)
-	{
-		def Reason = "Artifactory Deployment failed"
-		currentBuild.result = "FAILURE"
-		sh 'echo ${BUILD_STATUS}'
-		notifyFailure(Reason)
-		sh 'exit 1'
-	}
+	
+	
 	 
 	/*************** Build Promotion Section ***************
-	try{
+	
 		stage ('Build Promotions') {
+			Reason = "Build Promotions Failed"
 			def promotionConfig = [
 				// Mandatory parameters
 				'buildName'          : buildInfo.name,
@@ -198,17 +180,10 @@ node {
 			//server.promote promotionConfig //this promotes the build automatically to the target specified in promotionConfig 
 			Artifactory.addInteractivePromotion server: server, promotionConfig: promotionConfig, displayName: "Promotions Time" //this need human interaction to promote
 		}
-	}
-	catch(Exception e)
-	{
-		def Reason = "Build promotions failed"
-		currentBuild.result = "FAILURE"
-		sh 'echo ${BUILD_STATUS}'
-		notifyFailure(Reason)
-		sh 'exit 1'
-	}
-	try {
+	
+	
 		stage ('Reports creation') {
+			Reason = "Reports creation Failed"
 			sh '''sleep 15s
 			curl "http://10.240.17.12:9000/sonar/api/resources?resource=$JOB_NAME&metrics=bugs,vulnerabilities,code_smells,duplicated_blocks" > output.json
 			sleep 10s'''
@@ -216,7 +191,7 @@ node {
 	}
 	catch(Exception e)
 	{
-		def Reason = "Report Creation failed"
+		//def Reason = "Report Creation failed"
 		currentBuild.result = "FAILURE"
 		sh 'echo ${BUILD_STATUS}'
 		notifyFailure(Reason)
