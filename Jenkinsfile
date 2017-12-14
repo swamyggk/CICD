@@ -123,6 +123,7 @@ node {
 			println SonarHostName
 			println SonarHostName
 			println SonarHostName
+				sh ' exit 1'
 					/*************** Docker Compose ***************
 			sh """jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d
 				./clean_up.sh"""
