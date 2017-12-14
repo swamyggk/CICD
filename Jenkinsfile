@@ -190,7 +190,6 @@ node {
 			sleep 10s'''
 		}
 	*/
-	
 	stage ('Email Notifications') {
 		notifySuccessful() 
 	}
