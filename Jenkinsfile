@@ -91,7 +91,25 @@ node {
 		stage ('Docker Deploy and RFW') {
 		/*******Locking Resource ********/
 			Reason = "Docker Deployment or RFW Failed"
-			def SonarHostName = lockName()
+			def JobName = "${JOB_NAME}"
+			def content = readFile './.env'
+			Properties properties = new Properties()
+			InputStream contents = new ByteArrayInputStream(content.getBytes());
+			properties.load(contents)
+			contents = null
+			def branch_name1 = properties.branch_name
+			println "${branch_name1}" 
+			if(JobName.contains('PR-'))
+			{
+			 def index = JobName.indexOf("/");
+			 SonarHostName = JobName.substring(0 , index)+"_"+"${branch_name1}"
+			}
+			else
+			{
+ 				def index = JobName.indexOf("/");
+				 SonarHostName = JobName.substring(0 , index)+"_"+"${BRANCH_NAME}"
+			}
+			sh 'exit 1 '
 			lock(SonarHostName) {
 					/*************** Docker Compose ***************
 			sh """jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d
