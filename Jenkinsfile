@@ -17,31 +17,6 @@ def getMavenBuildArtifactName() {
  return "${pom.artifactId}-${pom.version}.${pom.packaging}"
 }
 
-/******************* Reading branch name for Sonar parameters and Lock resource **************/
-def lockName() {
-def JobName = "${JOB_NAME}"
-//def SonarHostName
-def content = readFile './.env'
-Properties properties = new Properties()
-InputStream contents = new ByteArrayInputStream(content.getBytes());
-properties.load(contents)
-contents = null
-def branch_name1 = properties.branch_name
-println "${branch_name1}" 
-if(JobName.contains('PR-'))
-{
- def index = JobName.indexOf("/");
- SonarHostName = JobName.substring(0 , index)+"_"+"${branch_name1}"
-}
-else
-{
- def index = JobName.indexOf("/");
- SonarHostName = JobName.substring(0 , index)+"_"+"${BRANCH_NAME}"
-}
-//println SonarHostName
-//println JobName
-return "${SonarHostName}"
-}
 /******************** Notifying buildInfo **********************/
 def notifySuccessful(){
 emailext (
@@ -55,7 +30,7 @@ emailext (
 	<b style=\'font-family: Candara;\'>${BUILD_LOG_REGEX, regex="http://padlcicdggk4.sw.fortna.net:8088/artifactory/webapp/*", linesBefore=0, linesAfter=0, maxMatches=1, showTruncatedLines=false, escapeHtml=true}<b></p>
 	<p><br><br>${SCRIPT, template="robotframework_template.groovy"}</p>
 	<p><br><br><br><br><br><br><br><h2><a href="$BUILD_URL">Click Here</a> to view build result</h2><br><h3>Please find below, the build logs and other files.</h3></p>
-	</span>''', subject: '$DEFAULT_SUBJECT', to: 'sunil.boga@ggktech.com,sneha.kailasa@ggktech.com'
+	</span>''', subject: '$DEFAULT_SUBJECT', to: 'sneha.kailasa@ggktech.com'
 	)
 }
 
