@@ -13,7 +13,7 @@ def Reason = "JOB FAILED"
 
 def lockVar = "hello"
 
-def SonarHostName
+def SonarHostName = ""
 
 /******reading jar file name*********/
 def getMavenBuildArtifactName() {
