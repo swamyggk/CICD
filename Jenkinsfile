@@ -132,7 +132,7 @@ node {
 		/*******Locking Resource ********/
 			Reason = "Docker Deployment or RFW Failed"
 			def SonarHostName = lockName()
-			lock(SonarHostName) {
+			lock(lockVar) {
 			sh '''echo 'The value is'
 			echo Hi'''
 			println SonarHostName
