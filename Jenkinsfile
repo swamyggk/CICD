@@ -11,6 +11,8 @@ def rtMaven = Artifactory.newMavenBuild()	//Creating an Artifactory Maven Build 
 
 def Reason = "JOB FAILED"
 
+def lockVar
+
 /******reading jar file name*********/
 def getMavenBuildArtifactName() {
  pom = readMavenPom file: 'pom.xml'
@@ -28,7 +30,7 @@ properties.load(contents)
 contents = null
 def branch_name1 = properties.branch_name
 println "${branch_name1}" 
-if(JobName.contains('PR-'))
+/*if(JobName.contains('PR-'))
 {
  def index = JobName.indexOf("/");
  SonarHostName = JobName.substring(0 , index)+"_"+"${branch_name1}"
@@ -37,6 +39,19 @@ else
 {
  def index = JobName.indexOf("/");
  SonarHostName = JobName.substring(0 , index)+"_"+"${BRANCH_NAME}"
+}*/
+	
+if(JobName.contains('PR-'))
+{
+ def index = JobName.indexOf("/");
+ lockVar = JobName.substring(0 , index)+"_"+"${branch_name1}"
+ SonarHostName = lockVar + "PR" 
+}
+else
+{
+ def index = JobName.indexOf("/");
+ SonarHostName = JobName.substring(0 , index)+"_"+"${BRANCH_NAME}"
+ lockVar = SonarHostName
 }
 //println SonarHostName
 //println JobName
