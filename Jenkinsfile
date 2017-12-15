@@ -1,4 +1,4 @@
-/****************************** Environment variables ******************************/ 
+/****************************** Environment variables ******************************/
 def JobName									// variable to get jobname 
 def SonarHostName							// varibale passed as SonarQube parameter while building the application
 def robot_result_folder = ""				// variable used to store Robot Framework test results
@@ -87,13 +87,13 @@ node {
 			rtMaven.deployer.deployArtifacts = false																//this will not publish artifacts soon after build succeeds	//
 			rtMaven.tool = 'maven'																					//Defining maven tool //
 			// Maven build starts here //
-			//withSonarQubeEnv {
+			withSonarQubeEnv {
 				def mvn_version = tool 'maven'
 				echo "${mvn_version}"
 				withEnv( ["PATH+MAVEN=${mvn_version}/bin"] ) {
-					buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install -Dmaven.test.skip=true' //$SONAR_MAVEN_GOAL -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.projectKey="$SonarHostName" -Dsonar.projectName="$SonarHostName"'
+					buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install -Dmaven.test.skip=true $SONAR_MAVEN_GOAL -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.projectKey="$SonarHostName" -Dsonar.projectName="$SonarHostName"'
 				}
-			//}
+			}
 		}
 
 /****************************** Docker Compose and Robot Framework testing on container ******************************/
@@ -131,36 +131,36 @@ node {
 						def om_index = properties.om_image_name.indexOf(":");
 						def omImageName = properties.om_image_name.substring(0 , om_index)+":latest"
 						sh """
-							docker image tag $properties.om_image_name swamykonanki/$properties.om_image_name
-							docker image tag $properties.om_image_name swamykonanki/$omImageName
-							docker image tag $properties.cp_image_name swamykonanki/$properties.cp_image_name
-							docker image tag $properties.cp_image_name swamykonanki/$cpImageName
-
+							docker tag ${properties.om_image_name} swamykonanki/${properties.om_image_name}
+							docker tag ${properties.om_image_name} swamykonanki/${omImageName}
+							docker tag ${properties.cp_image_name} swamykonanki/${properties.cp_image_name}
+							docker tag ${properties.cp_image_name} swamykonanki/${cpImageName}
+							"""
 							docker.withRegistry("https://index.docker.io/v1/", 'DockerCredentialsID'){
-								def customImage1 = docker.image('swamykonanki/$properties.om_image_name')
+								def customImage1 = docker.image("swamykonanki/${properties.om_image_name}")
 								customImage1.push()
-								def customImage2 = docker.image('swamykonanki/$properties.om_image_name')
+								def customImage2 = docker.image("swamykonanki/${omImageName}")
 								customImage2.push()
-								def customImage3 = docker.image('swamykonanki/$properties.om_image_name')
+								def customImage3 = docker.image("swamykonanki/${properties.cp_image_name}")
 								customImage3.push()
-								def customImage4 = docker.image('swamykonanki/$properties.om_image_name')
+								def customImage4 = docker.image("swamykonanki/${cpImageName}")
 								customImage4.push()
 							}
-							docker logout
-						"""	
+							sh """docker logout"""
+							
 					}
 				
 					// ***** Stage for triggering CD pipeline ***** //				
 					stage ('Starting ART job') {
 					Reason = "DownStream Job Failed"
-		   			 	build job: 'Docker_registry' //,parameters: [[$class: 'StringParameterValue', name: 'var1', value: 'var1_value']]
-					}
+		   			 	build job: 'Docker_registry',parameters: [[$class: 'StringParameterValue', name: 'var1', value: 'var1_value']]
+					} 
 				}
 				sh './clean_up.sh'
 			}						// lock will be released here //
 		}							// Docker Deployment and RFW stage ends here //
 
-/****************************** Stage for Deploying artifacts to Artifactory ******************************
+/****************************** Stage for Deploying artifacts to Artifactory ******************************/
 		stage ('Build Promotions') {
 			Reason = "Build Promotions Failed"
 			def promotionConfig = [
@@ -182,13 +182,13 @@ node {
 			Artifactory.addInteractivePromotion server: server, promotionConfig: promotionConfig, displayName: "Promotions Time" //this need human interaction to promote
 		}
 	
-/****************************** Stage for creating reports for SonarQube Analysis ******************************
+/****************************** Stage for creating reports for SonarQube Analysis ******************************/
 		stage ('Reports creation') {
 			Reason = "Reports creation Failed"
 			sh '''sleep 15s
 			curl "http://10.240.17.12:9000/sonar/api/resources?resource=$JOB_NAME&metrics=bugs,vulnerabilities,code_smells,duplicated_blocks" > output.json
 			sleep 10s'''
-		}*/
+		}
 
 /****************************** Stage for sending Email Notifications when Build succeeds ******************************/	
 		stage ('Email Notifications') {
