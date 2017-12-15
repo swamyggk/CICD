@@ -141,7 +141,7 @@ node {
 						 sh ''' ./clean_up.sh
 						 exit 1'''
 					 }
-			if(!${JOB_NAME}.contains('PR-'))
+			if(!(${JOB_NAME}.contains('PR-')))
 			{
 			/*************** Publishing buildInfo to Artifactory ***************/
 				stage ('Artifacts Deployment'){		
