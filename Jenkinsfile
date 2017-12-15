@@ -1,4 +1,4 @@
-/****************************** Environment variables ******************************/ 
+/****************************** Environment variables ******************************/
 def JobName									// variable to get jobname 
 def SonarHostName							// varibale passed as SonarQube parameter while building the application
 def robot_result_folder = ""				// variable used to store Robot Framework test results
@@ -131,16 +131,21 @@ node {
 						def om_index = properties.om_image_name.indexOf(":");
 						def omImageName = properties.om_image_name.substring(0 , om_index)+":latest"
 						sh """
-							docker login -u swamykonanki -p 7396382834
 							docker image tag $properties.om_image_name swamykonanki/$properties.om_image_name
 							docker image tag $properties.om_image_name swamykonanki/$omImageName
 							docker image tag $properties.cp_image_name swamykonanki/$properties.cp_image_name
 							docker image tag $properties.cp_image_name swamykonanki/$cpImageName
-							
-							docker push swamykonanki/$properties.om_image_name
-							docker push swamykonanki/$omImageName
-							docker push swamykonanki/$properties.cp_image_name
-							docker push swamykonanki/$cpImageName
+
+							docker.withRegistry("https://index.docker.io/v1/", 'DockerCredentialsID'){
+								def customImage1 = docker.image('swamykonanki/$properties.om_image_name')
+								customImage1.push()
+								def customImage2 = docker.image('swamykonanki/$properties.om_image_name')
+								customImage2.push()
+								def customImage3 = docker.image('swamykonanki/$properties.om_image_name')
+								customImage3.push()
+								def customImage4 = docker.image('swamykonanki/$properties.om_image_name')
+								customImage4.push()
+							}
 							docker logout
 						"""	
 					}
