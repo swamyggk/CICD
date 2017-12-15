@@ -131,19 +131,19 @@ node {
 						def om_index = properties.om_image_name.indexOf(":");
 						def omImageName = properties.om_image_name.substring(0 , om_index)+":latest"
 						sh """
-							docker image tag $properties.om_image_name swamykonanki/$properties.om_image_name
-							docker image tag $properties.om_image_name swamykonanki/$omImageName
-							docker image tag $properties.cp_image_name swamykonanki/$properties.cp_image_name
-							docker image tag $properties.cp_image_name swamykonanki/$cpImageName
+							docker image tag ${properties.om_image_name} swamykonanki/${properties.om_image_name}
+							docker image tag ${properties.om_image_name} swamykonanki/${omImageName}
+							docker image tag ${properties.cp_image_name} swamykonanki/${properties.cp_image_name}
+							docker image tag ${properties.cp_image_name} swamykonanki/${cpImageName}
 							"""
 							docker.withRegistry("https://index.docker.io/v1/", 'DockerCredentialsID'){
-								def customImage1 = docker.image('swamykonanki/$properties.om_image_name')
+								def customImage1 = docker.image('swamykonanki/${properties.om_image_name}')
 								customImage1.push()
-								def customImage2 = docker.image('swamykonanki/$properties.om_image_name')
+								def customImage2 = docker.image('swamykonanki/${omImageName}')
 								customImage2.push()
-								def customImage3 = docker.image('swamykonanki/$properties.om_image_name')
+								def customImage3 = docker.image('swamykonanki/${properties.cp_image_name}')
 								customImage3.push()
-								def customImage4 = docker.image('swamykonanki/$properties.om_image_name')
+								def customImage4 = docker.image('swamykonanki/${cpImageName}')
 								customImage4.push()
 							}
 							sh """docker logout"""
