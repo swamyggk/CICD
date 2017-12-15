@@ -101,7 +101,7 @@ node {
 			Reason = "Docker Deployment or Robot Framework Test cases Failed"
 			lock(lockVar) {
 				// Docker Compose starts // 
-				sh "jarfile_name=${jar_name} /usr/local/bin/docker-compose up"
+				sh "jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d"
 				robot_result_folder = properties.robot_result_folder
 				step([$class: 'RobotPublisher',
 					outputPath: "/home/robot/${robot_result_folder}",
