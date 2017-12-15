@@ -161,9 +161,10 @@ node {
 				stage ('Publish Docker Images'){
 					println "Publish Docker Images"
 					def cp_index = properties.cp_image_name.indexOf(":");
+					println properties.cp_image_name
 					println cp_index
 					def cpImageName = properties.cp_image_name.substring(0 , cp_index)+":latest"
-					def om_index = properties.cp_image_name.indexOf(":");
+					def om_index = properties.om_image_name.indexOf(":");
 					def omImageName = properties.om_image_name.substring(0 , om_index)+":latest"
 					println cpImageName+"n fv"
 					println omImageName+"lnjdsds"
