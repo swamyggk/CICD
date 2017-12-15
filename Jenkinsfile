@@ -183,7 +183,7 @@ node {
 			/*************** Triggering CD Job ***************/
 				stage ('Starting ART job') {
 				Reason = "DownStream Job Failed"
-	   			 	build job: Docker_registry //,parameters: [[$class: 'StringParameterValue', name: 'var1', value: 'var1_value']]
+	   			 	build job: 'Docker_registry' //,parameters: [[$class: 'StringParameterValue', name: 'var1', value: 'var1_value']]
 				}
 			}
 			sh './clean_up.sh'
