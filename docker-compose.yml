@@ -28,7 +28,7 @@ services:
       args:
         jarfile_name: ${jarfile_name}
         port: ${port}
-        username: ${username}
+        db_details: ${db_details}
     image: ${cp_image_name}
     networks:
       frontend:
