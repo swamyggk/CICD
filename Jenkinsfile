@@ -152,11 +152,6 @@ node {
 			
 			/*************** Publishing Docker Images to Docker Registry ***************/
 				stage ('Publish Docker Images'){
-					def content = readFile './.env'
-					Properties properties = new Properties()
-					InputStream contents = new ByteArrayInputStream(content.getBytes());
-					properties.load(contents)
-					contents = null
 					sh """
 						docker login -u swamykonanki -p 7396382834
 						docker image tag $properties.om_image_name swamykonanki/$properties.om_image_name-${BUILD_NUMBER}
