@@ -1,4 +1,4 @@
-/****************************** Environment variables ******************************/ 
+/****************************** Environment variables ******************************/
 def JobName									// variable to get jobname 
 def SonarHostName							// varibale passed as SonarQube parameter while building the application
 def robot_result_folder = ""				// variable used to store Robot Framework test results
@@ -124,7 +124,7 @@ node {
 						server.publishBuildInfo buildInfo
 					}	*/		
 					// ***** Stage for Publishing Docker images ***** //							
-					stage ('Publish Docker Images'){
+				/*	stage ('Publish Docker Images'){
 						Reason = "Publish Docker Images Failed"
 						def cp_index = properties.cp_image_name.indexOf(":");								
 						def cpImageName = properties.cp_image_name.substring(0 , cp_index)+":latest"
@@ -148,13 +148,13 @@ node {
 							}
 							sh """docker logout"""
 							
-					}
+					}*/
 				
-					// ***** Stage for triggering CD pipeline ***** //				
+					/* / ***** Stage for triggering CD pipeline ***** //				
 					stage ('Starting ART job') {
 					Reason = "DownStream Job Failed"
 		   			 	build job: 'Docker_registry' //,parameters: [[$class: 'StringParameterValue', name: 'var1', value: 'var1_value']]
-					}
+					} */
 				}
 				sh './clean_up.sh'
 			}						// lock will be released here //
