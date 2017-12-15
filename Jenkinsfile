@@ -99,9 +99,9 @@ node {
 	/*************** Robot Frame work results ***************/
 		stage ('lockVar')	{
 			JobName = "${JOB_NAME}"
-			def content = readFile './.env'
-			Properties properties = new Properties()
-			InputStream contents = new ByteArrayInputStream(content.getBytes());
+			content = readFile './.env'
+			properties = new Properties()
+			contents = new ByteArrayInputStream(content.getBytes());
 			properties.load(contents)
 			contents = null
 			def branch_name1 = properties.branch_name
