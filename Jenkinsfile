@@ -137,22 +137,22 @@ node {
 					passThreshold: 0,
 					unstableThreshold: 0,
 					otherFiles: ""])
-					println JobName
+					
 				if("${currentBuild.result}" == "FAILURE")
 					 {	
 						 sh ''' ./clean_up.sh
 						 exit 1'''
 					 }
-					 println JobName
+					 
 			if(!(JobName.contains('PR-')))
 			{
-			/*************** Publishing buildInfo to Artifactory ***************/
+			/*************** Publishing buildInfo to Artifactory **************
 				stage ('Artifacts Deployment'){		
 					println "Artifacts Deployment stage"
 					Reason = "Artifacts Deployment Failed"
 					rtMaven.deployer.deployArtifacts buildInfo	//this should be disabled when depoyArtifacts is set to false. Otherwise, this will publish the Artifacts.
 					server.publishBuildInfo buildInfo
-				}	
+				}	*/
 			
 			/*************** Publishing Docker Images to Docker Registry ***************/
 				stage ('Publish Docker Images'){
