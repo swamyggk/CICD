@@ -1,4 +1,4 @@
-/****************************** Environment variables ******************************/ 
+/****************************** Environment variables ******************************/
 def JobName									// variable to get jobname 
 def SonarHostName							// varibale passed as SonarQube parameter while building the application
 def robot_result_folder = ""				// variable used to store Robot Framework test results
@@ -137,13 +137,13 @@ node {
 							docker image tag ${properties.cp_image_name} swamykonanki/${cpImageName}
 							"""
 							docker.withRegistry("https://index.docker.io/v1/", 'DockerCredentialsID'){
-								def customImage1 = docker.image('swamykonanki/${properties.om_image_name}')
+								def customImage1 = docker.image("swamykonanki/${properties.om_image_name}")
 								customImage1.push()
-								def customImage2 = docker.image('swamykonanki/${omImageName}')
+								def customImage2 = docker.image("swamykonanki/${omImageName}")
 								customImage2.push()
-								def customImage3 = docker.image('swamykonanki/${properties.cp_image_name}')
+								def customImage3 = docker.image("swamykonanki/${properties.cp_image_name}")
 								customImage3.push()
-								def customImage4 = docker.image('swamykonanki/${cpImageName}')
+								def customImage4 = docker.image("swamykonanki/${cpImageName}")
 								customImage4.push()
 							}
 							sh """docker logout"""
