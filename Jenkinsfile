@@ -160,6 +160,8 @@ node {
 					def index = properties.cp_image_name.indexOf(":");
 					def cpImageName = properties.cp_image_name.substring(0 , index)+":latest"
 					def omImageName = properties.om_image_name.substring(0 , index)+":latest"
+					println cpImageName
+					println omImageName
 					
 					sh """
 						docker login -u swamykonanki -p 7396382834
