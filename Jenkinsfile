@@ -1,4 +1,4 @@
-/****************************** Environment variables ******************************/ 
+/****************************** Environment variables ******************************/
 def JobName									// variable to get jobname 
 def SonarHostName							// varibale passed as SonarQube parameter while building the application
 def robot_result_folder = ""				// variable used to store Robot Framework test results
@@ -131,10 +131,10 @@ node {
 						def om_index = properties.om_image_name.indexOf(":");
 						def omImageName = properties.om_image_name.substring(0 , om_index)+":latest"
 						sh """
-							docker image tag ${properties.om_image_name} swamykonanki/${properties.om_image_name}
-							docker image tag ${properties.om_image_name} swamykonanki/${omImageName}
-							docker image tag ${properties.cp_image_name} swamykonanki/${properties.cp_image_name}
-							docker image tag ${properties.cp_image_name} swamykonanki/${cpImageName}
+							docker tag ${properties.om_image_name} swamykonanki/${properties.om_image_name}
+							docker tag ${properties.om_image_name} swamykonanki/${omImageName}
+							docker tag ${properties.cp_image_name} swamykonanki/${properties.cp_image_name}
+							docker tag ${properties.cp_image_name} swamykonanki/${cpImageName}
 							"""
 							docker.withRegistry("https://index.docker.io/v1/", 'DockerCredentialsID'){
 								def customImage1 = docker.image("swamykonanki/${properties.om_image_name}")
