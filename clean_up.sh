@@ -52,5 +52,25 @@ if [ ! -z "$image_status" ];
 then
   docker rmi -f $om_image_name
 fi
+###############################################
+ImageName=$(echo $cp_image_name| cut -d':' -f 1)
+echo $ImageName
+
+image_status=`docker images -a | grep "$ImageName"`
+
+if [ ! -z "$image_status" ];
+then
+  docker rmi -f $ImageName
+fi
+###############################################
+ImageName=$(echo $om_image_name| cut -d':' -f 1)
+echo $ImageName
+
+image_status=`docker images -a | grep "$ImageName"`
+
+if [ ! -z "$image_status" ];
+then
+  docker rmi -f $ImageName
+fi
 
 echo "Removed all containers"
