@@ -1,15 +1,20 @@
-/***** Jenkinsfile with final template *****/
+
+		/***** Jenkinsfile with final template *****/
 
 /************************ Environment Variables **************************/
 def robot_result_folder = ""
 
 def server = Artifactory.server 'server1'		//Artifactory server instance declaration. 'server1' is the Server ID given to Artifactory server in Jenkins
 
-def buildInfo = 'null'						//buildInfo variable
+def buildInfo = "null"						//buildInfo variable
 	
 def rtMaven = Artifactory.newMavenBuild()	//Creating an Artifactory Maven Build instance
 
 def Reason = "JOB FAILED"
+
+def lockVar = ""
+
+def SonarHostName
 
 /******reading jar file name*********/
 def getMavenBuildArtifactName() {
@@ -30,19 +35,18 @@ emailext (
 	<b style=\'font-family: Candara;\'>${BUILD_LOG_REGEX, regex="http://padlcicdggk4.sw.fortna.net:8088/artifactory/webapp/*", linesBefore=0, linesAfter=0, maxMatches=1, showTruncatedLines=false, escapeHtml=true}<b></p>
 	<p><br><br>${SCRIPT, template="robotframework_template.groovy"}</p>
 	<p><br><br><br><br><br><br><br><h2><a href="$BUILD_URL">Click Here</a> to view build result</h2><br><h3>Please find below, the build logs and other files.</h3></p>
-	</span>''', subject: '$DEFAULT_SUBJECT', to: 'sneha.kailasa@ggktech.com'
+	</span>''', subject: '$DEFAULT_SUBJECT', to: 'sunil.boga@ggktech.com, sneha.kailasa@ggktech.com'
 	)
 }
 
 def notifyFailure(def Reason){
-println "Failed Reason:  ${Reason}"
+println "Failed Reason: ${Reason}"
 emailext (
 	attachLog: true, attachmentsPattern: '*.html, output.xml', body: '''<span style=\'line-height: 22px; font-family: Candara; padding: 10.5px; font-size: 15px; word-break: break-all; word-wrap: break-word; \'>
 	<h1><FONT COLOR=red>$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS</FONT></h1>
- 	<h1>${BUILD_LOG_REGEX, regex="Failed Reason: ", linesBefore=0, linesAfter=0, maxMatches=1, showTruncatedLines=false, escapeHtml=true}</h1> 
- 	<h1> zsdfzdsf "$currentBuild.description" $currentBuild $description $BUILD_DESCRIPTION</h1>
+  	<h1>${BUILD_LOG_REGEX, regex="Failed Reason: ", linesBefore=0, linesAfter=0, maxMatches=1, showTruncatedLines=false, escapeHtml=true}</h1>
 	<p><h2><a href="$BUILD_URL">Click Here</a> to view build result</h2><br><h3>Please find below, the build logs and other files.</h3></p>
-	</span>''', subject: '$DEFAULT_SUBJECT', to: 'sneha.kailasa@ggktech.com'
+	</span>''', subject: '$DEFAULT_SUBJECT', to: 'sunil.boga@ggktech.com, sneha.kailasa@ggktech.com'
 	)
 }
 
@@ -51,9 +55,9 @@ node {
 	/*************** Git Checkout ***************/
 	try {
 		stage ('Checkout') {
-			//checkout scm	
+			checkout scm	
 			Reason = "GIT Checkout Failed"
-			checkout([$class: 'GitSCM', branches: [[name: '*/TestBoga']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/boga5/CICD.git']]])
+			//checkout([$class: 'GitSCM', branches: [[name: '*/TestBoga']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/boga5/CICD.git']]])
 			
 		}
 	
@@ -62,7 +66,7 @@ node {
     /************ getting jarfile name ************/
     def jar_name = getMavenBuildArtifactName()
 	
-    /*************** Building the application ***************
+    /*************** Building the application ***************/
 	
 		stage ('Maven Build') {
 			Reason = "Maven Build Failed"
@@ -75,23 +79,20 @@ node {
 			
 			rtMaven.tool = 'maven'						//Defining maven tool 
 			
-			/*************** Build Step ***************
-			withSonarQubeEnv {
+			/*************** Build Step ***************/
+			//withSonarQubeEnv {
 				def mvn_version = tool 'maven'
 				echo "${mvn_version}"
 				withEnv( ["PATH+MAVEN=${mvn_version}/bin"] ) {
-					buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install -Dmaven.test.skip=true $SONAR_MAVEN_GOAL -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.projectKey="$JOB_NAME" -Dsonar.projectName="$JOB_NAME"'
+					buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install -Dmaven.test.skip=true' //$SONAR_MAVEN_GOAL -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.projectKey="$SonarHostName" -Dsonar.projectName="$SonarHostName"'
 				}
-			}
+			//}
 		}
 	
 	
 	
 	/*************** Robot Frame work results ***************/
-	
-		stage ('Docker Deploy and RFW') {
-		/*******Locking Resource ********/
-			Reason = "Docker Deployment or RFW Failed"
+		stage ('lockVar')	{
 			def JobName = "${JOB_NAME}"
 			def content = readFile './.env'
 			Properties properties = new Properties()
@@ -102,19 +103,27 @@ node {
 			println "${branch_name1}" 
 			if(JobName.contains('PR-'))
 			{
-			 def index = JobName.indexOf("/");
-			 SonarHostName = JobName.substring(0 , index)+"_"+"${branch_name1}"
+				def index = JobName.indexOf("/");
+				lockVar = JobName.substring(0 , index)+"_"+"${branch_name1}"
+				SonarHostName = lockVar + "PR" 
 			}
 			else
 			{
- 				def index = JobName.indexOf("/");
+				 def index = JobName.indexOf("/");
 				 SonarHostName = JobName.substring(0 , index)+"_"+"${BRANCH_NAME}"
+				 lockVar = SonarHostName
 			}
-			sh 'exit 1 '
-			lock(SonarHostName) {
-					/*************** Docker Compose ***************
+		}
+
+		stage ('Docker Deploy and RFW') {
+		/*******Locking Resource ********/
+			Reason = "Docker Deployment or RFW Failed"
+			println lockVar
+			lock(lockVar) {
+			println SonarHostName
+		/*************** Docker Compose ***************/
 			sh """jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d
-				./clean_up.sh"""
+				"""
 				def content = readFile './.env'
 				Properties properties = new Properties()
 				InputStream contents = new ByteArrayInputStream(content.getBytes());
@@ -123,27 +132,49 @@ node {
 				robot_result_folder = properties.robot_result_folder
 				step([$class: 'RobotPublisher',
 					outputPath: "/home/robot/${robot_result_folder}",
-					passThreshold: 50,
-					unstableThreshold: 50,
+					passThreshold: 0,
+					unstableThreshold: 0,
 					otherFiles: ""])
-			if("${currentBuild.result}" == "FAILURE")
-			 {
-				 sh "exit 1"
-			 }*/
+				
+				if("${currentBuild.result}" == "FAILURE")
+					 {	
+						 sh ''' ./clean_up.sh
+						 exit 1'''
+					 }
+			if(!${JOB_NAME}.contains('PR-'))
+			{
+			/*************** Publishing buildInfo to Artifactory ***************/
+				stage ('Artifacts Deployment'){		
+					Reason = "Artifacts Deployment Failed"
+					rtMaven.deployer.deployArtifacts buildInfo	//this should be disabled when depoyArtifacts is set to false. Otherwise, this will publish the Artifacts.
+					server.publishBuildInfo buildInfo
+				}	
+			
+			/*************** Publishing Docker Images to Docker Registry ***************/
+				stage ('Publish Docker Images'){
+					def content = readFile './.env'
+					Properties properties = new Properties()
+					InputStream contents = new ByteArrayInputStream(content.getBytes());
+					properties.load(contents)
+					contents = null
+					sh """
+						docker login -u swamykonanki -p 7396382834
+						docker image tag $properties.om_image_name swamykonanki/$properties.om_image_name-${BUILD_NUMBER}
+						docker image tag $properties.cp_image_name swamykonanki/$properties.cp_image_name-${BUILD_NUMBER}
+						docker push swamykonanki/om_image_name-${BUILD_NUMBER}
+						docker push swamykonanki/cp_image_name-${BUILD_NUMBER}
+						docker logout
+					"""	
+				}
+			
+			/*************** Triggering CD Job ***************/
+				stage ('Starting ART job') {
+	   			 	build job: SonarHostName,parameters: [[$class: 'StringParameterValue', name: var1, value: var1_value]]
+				}
+			}
+			sh './clean_up.sh'
 			}
 		}
-	
-	
-	
-	/*************** Pushing the artifacts***************	
-	
-		stage ('Artifacts Deployment'){		
-			/*************** Publishing buildInfo to Artifactory ***************
-			Reason = "Artifacts Deployment Failed"
-			rtMaven.deployer.deployArtifacts buildInfo	//this should be disabled when depoyArtifacts is set to false. Otherwise, this will publish the Artifacts.
-			server.publishBuildInfo buildInfo
-		}
-	
 	
 	 
 	/*************** Build Promotion Section ***************
@@ -176,8 +207,8 @@ node {
 			sh '''sleep 15s
 			curl "http://10.240.17.12:9000/sonar/api/resources?resource=$JOB_NAME&metrics=bugs,vulnerabilities,code_smells,duplicated_blocks" > output.json
 			sleep 10s'''
-		}
-	*/
+		}*/
+	
 	stage ('Email Notifications') {
 		notifySuccessful() 
 	}
@@ -186,11 +217,7 @@ node {
 	{
 		//def Reason = "Report Creation failed"
 		currentBuild.result = "FAILURE"
-		currentBuild.description="${Reason}"
-		currentBuild.setDescription(description)
-		println "Failed Reason: " + currentBuild.description
 		notifyFailure(Reason)
 		sh 'exit 1'
 	}
 }
-	
