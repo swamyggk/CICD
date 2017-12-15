@@ -187,7 +187,7 @@ node {
 		//def Reason = "Report Creation failed"
 		currentBuild.result = "FAILURE"
 		currentBuild.description="${Reason}"
-		build.setDescription(Reason)
+		currentBuild.setDescription(description)
 		println "Failed Reason: " + currentBuild.description
 		notifyFailure(Reason)
 		sh 'exit 1'
