@@ -157,11 +157,12 @@ node {
 			/*************** Publishing Docker Images to Docker Registry ***************/
 				stage ('Publish Docker Images'){
 					println "Publish Docker Images"
-					def index = properties.cp_image_name.indexOf(":");
-					def cpImageName = properties.cp_image_name.substring(0 , index)+":latest"
-					def omImageName = properties.om_image_name.substring(0 , index)+":latest"
-					println cpImageName
-					println omImageName
+					def cp_index = properties.cp_image_name.indexOf(":");
+					def cpImageName = properties.cp_image_name.substring(0 , cp_index)+":latest"
+					def om_index = properties.cp_image_name.indexOf(":");
+					def omImageName = properties.om_image_name.substring(0 , om_index)+":latest"
+					println cpImageName+"n fv"
+					println omImageName+"lnjdsds"
 					
 					sh """
 						docker login -u swamykonanki -p 7396382834
