@@ -145,6 +145,7 @@ node {
 			{
 			/*************** Publishing buildInfo to Artifactory ***************/
 				stage ('Artifacts Deployment'){		
+					println "Artifacts Deployment stage"
 					Reason = "Artifacts Deployment Failed"
 					rtMaven.deployer.deployArtifacts buildInfo	//this should be disabled when depoyArtifacts is set to false. Otherwise, this will publish the Artifacts.
 					server.publishBuildInfo buildInfo
@@ -152,6 +153,7 @@ node {
 			
 			/*************** Publishing Docker Images to Docker Registry ***************/
 				stage ('Publish Docker Images'){
+					println "Publish Docker Images"
 					sh """
 						docker login -u swamykonanki -p 7396382834
 						docker image tag $properties.om_image_name swamykonanki/$properties.om_image_name-${BUILD_NUMBER}
@@ -164,6 +166,7 @@ node {
 			
 			/*************** Triggering CD Job ***************/
 				stage ('Starting ART job') {
+				println "Starting ART job stage"
 	   			 	build job: SonarHostName,parameters: [[$class: 'StringParameterValue', name: var1, value: var1_value]]
 				}
 			}
