@@ -157,12 +157,21 @@ node {
 			/*************** Publishing Docker Images to Docker Registry ***************/
 				stage ('Publish Docker Images'){
 					println "Publish Docker Images"
+					def index = properties.cp_image_name.indexOf(":");
+					def cpImageName = properties.cp_image_name.substring(0 , index)+":latest"
+					def omImageName = properties.om_image_name.substring(0 , index)+":latest"
+					
 					sh """
 						docker login -u swamykonanki -p 7396382834
-						docker image tag $properties.om_image_name swamykonanki/$properties.om_image_name-${BUILD_NUMBER}
-						docker image tag $properties.cp_image_name swamykonanki/$properties.cp_image_name-${BUILD_NUMBER}
-						docker push swamykonanki/om_image_name-${BUILD_NUMBER}
-						docker push swamykonanki/cp_image_name-${BUILD_NUMBER}
+						docker image tag $properties.om_image_name swamykonanki/$properties.om_image_name
+						docker image tag $properties.om_image_name swamykonanki/$omImageName
+						docker image tag $properties.cp_image_name swamykonanki/$properties.cp_image_name
+						docker image tag $properties.cp_image_name swamykonanki/$cpImageName
+						
+						docker push swamykonanki/$properties.om_image_name
+						docker push swamykonanki/$omImageName
+						docker push swamykonanki/$properties.cp_image_name
+						docker push swamykonanki/$cpImageName
 						docker logout
 					"""	
 				}
