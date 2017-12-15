@@ -98,6 +98,7 @@ node {
 	
 	/*************** Robot Frame work results ***************/
 		stage ('lockVar')	{
+			Reason = "lockVar stage Failed"
 			JobName = "${JOB_NAME}"
 			content = readFile './.env'
 			properties = new Properties()
@@ -151,7 +152,6 @@ node {
 			{
 			/*************** Publishing buildInfo to Artifactory **************
 				stage ('Artifacts Deployment'){		
-					println "Artifacts Deployment stage"
 					Reason = "Artifacts Deployment Failed"
 					rtMaven.deployer.deployArtifacts buildInfo	//this should be disabled when depoyArtifacts is set to false. Otherwise, this will publish the Artifacts.
 					server.publishBuildInfo buildInfo
@@ -159,15 +159,11 @@ node {
 			
 			/*************** Publishing Docker Images to Docker Registry ***************/
 				stage ('Publish Docker Images'){
-					println "Publish Docker Images"
+					Reason = "Publish Docker Images Failed"
 					def cp_index = properties.cp_image_name.indexOf(":");
-					println properties.cp_image_name
-					println cp_index
 					def cpImageName = properties.cp_image_name.substring(0 , cp_index)+":latest"
 					def om_index = properties.om_image_name.indexOf(":");
 					def omImageName = properties.om_image_name.substring(0 , om_index)+":latest"
-					println cpImageName+"n fv"
-					println omImageName+"lnjdsds"
 					
 					sh """
 						docker login -u swamykonanki -p 7396382834
@@ -186,8 +182,8 @@ node {
 			
 			/*************** Triggering CD Job ***************/
 				stage ('Starting ART job') {
-				println "Starting ART job stage"
-	   			 	build job: SonarHostName,parameters: [[$class: 'StringParameterValue', name: var1, value: var1_value]]
+				Reason = "DownStream Job Failed"
+	   			 	build job: Docker_registry,parameters: [[$class: 'StringParameterValue', name: 'var1', value: 'var1_value']]
 				}
 			}
 			sh './clean_up.sh'
