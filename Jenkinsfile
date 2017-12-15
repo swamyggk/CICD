@@ -1,5 +1,5 @@
 
-	 	/***** Jenkinsfile with final template *****/
+		/***** Jenkinsfile with final template *****/
 
 /************************ Environment Variables **************************/
 def robot_result_folder = ""
@@ -141,7 +141,7 @@ node {
 						 sh ''' ./clean_up.sh
 						 exit 1'''
 					 }
-			if(!(${JOB_NAME}.contains('PR-')))
+			if(!(JobName.contains('PR-')))
 			{
 			/*************** Publishing buildInfo to Artifactory ***************/
 				stage ('Artifacts Deployment'){		
