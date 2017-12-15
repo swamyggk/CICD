@@ -1,4 +1,4 @@
- 
+
 		/***** Jenkinsfile with final template *****/
 
 /************************ Environment Variables **************************/
@@ -122,8 +122,8 @@ node {
 			lock(lockVar) {
 			println SonarHostName
 		/*************** Docker Compose ***************/
-			sh """jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d
-				"""
+			//sh """jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d
+				//"""
 				def content = readFile './.env'
 				Properties properties = new Properties()
 				InputStream contents = new ByteArrayInputStream(content.getBytes());
@@ -141,6 +141,7 @@ node {
 						 sh ''' ./clean_up.sh
 						 exit 1'''
 					 }
+					 println JobName
 			if(!(JobName.contains('PR-')))
 			{
 			/*************** Publishing buildInfo to Artifactory ***************/
