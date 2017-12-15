@@ -14,6 +14,8 @@ def Reason = "JOB FAILED"
 
 def lockVar = ""
 
+def JobName
+
 def SonarHostName
 
 /******reading jar file name*********/
@@ -93,7 +95,7 @@ node {
 	
 	/*************** Robot Frame work results ***************/
 		stage ('lockVar')	{
-			def JobName = "${JOB_NAME}"
+			JobName = "${JOB_NAME}"
 			def content = readFile './.env'
 			Properties properties = new Properties()
 			InputStream contents = new ByteArrayInputStream(content.getBytes());
