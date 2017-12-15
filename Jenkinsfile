@@ -15,6 +15,9 @@ def Reason = "JOB FAILED"
 def lockVar = ""
 
 def JobName
+def content
+Properties properties
+InputStream contents
 
 def SonarHostName
 
@@ -126,9 +129,9 @@ node {
 		/*************** Docker Compose ***************/
 			//sh """jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d
 				//"""
-				def content = readFile './.env'
-				Properties properties = new Properties()
-				InputStream contents = new ByteArrayInputStream(content.getBytes());
+				content = readFile './.env'
+				properties = new Properties()
+				contents = new ByteArrayInputStream(content.getBytes());
 				properties.load(contents)
 				contents = null
 				robot_result_folder = properties.robot_result_folder
@@ -158,6 +161,7 @@ node {
 				stage ('Publish Docker Images'){
 					println "Publish Docker Images"
 					def cp_index = properties.cp_image_name.indexOf(":");
+					println cp_index
 					def cpImageName = properties.cp_image_name.substring(0 , cp_index)+":latest"
 					def om_index = properties.cp_image_name.indexOf(":");
 					def omImageName = properties.om_image_name.substring(0 , om_index)+":latest"
