@@ -1,4 +1,4 @@
-/****************************** Environment variables ******************************/ 
+/****************************** Environment variables ******************************/
 def JobName									// variable to get jobname 
 def SonarHostName							// varibale passed as SonarQube parameter while building the application
 def robot_result_folder = ""				// variable used to store Robot Framework test results
@@ -101,7 +101,7 @@ node {
 			Reason = "Docker Deployment or Robot Framework Test cases Failed"
 			lock(lockVar) {
 				// Docker Compose starts // 
-				sh 'jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d'
+				sh 'jarfile_name=${jar_name} /usr/local/bin/docker-compose up'
 				robot_result_folder = properties.robot_result_folder
 				step([$class: 'RobotPublisher',
 					outputPath: "/home/robot/${robot_result_folder}",
