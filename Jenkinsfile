@@ -120,7 +120,7 @@ node {
 			Reason = "Docker Deployment or RFW Failed"
 			println lockVar
 			lock(lockVar) {
-			println SonarHostName
+			//println SonarHostName
 		/*************** Docker Compose ***************/
 			//sh """jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d
 				//"""
@@ -135,7 +135,7 @@ node {
 					passThreshold: 0,
 					unstableThreshold: 0,
 					otherFiles: ""])
-				
+					println JobName
 				if("${currentBuild.result}" == "FAILURE")
 					 {	
 						 sh ''' ./clean_up.sh
