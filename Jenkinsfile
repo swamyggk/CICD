@@ -1,5 +1,5 @@
 
-		/***** Jenkinsfile with final template *****/
+	 	/***** Jenkinsfile with final template *****/
 
 /************************ Environment Variables **************************/
 def robot_result_folder = ""
