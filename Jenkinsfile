@@ -187,6 +187,7 @@ node {
 		//def Reason = "Report Creation failed"
 		currentBuild.result = "FAILURE"
 		currentBuild.description="${Reason}"
+		println currentBuild.description
 		sh 'echo ${BUILD_STATUS}'
 		notifyFailure(Reason)
 		sh 'exit 1'
