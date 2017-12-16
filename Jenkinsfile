@@ -184,12 +184,12 @@ node {
 		}
 	*/
 /****************************** Stage for creating reports for SonarQube Analysis ******************************/
-		stage ('Reports creation') {
+		/*stage ('Reports creation') {
 			Reason = "Reports creation Failed"
 			sh '''sleep 15s
 			curl "http://10.240.17.12:9000/sonar/api/resources?resource=$JOB_NAME&metrics=bugs,vulnerabilities,code_smells,duplicated_blocks" > output.json
 			sleep 10s'''
-		}
+		}*/
 
 /****************************** Stage for sending Email Notifications when Build succeeds ******************************/	
 		stage ('Email Notifications') {
