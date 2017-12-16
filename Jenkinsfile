@@ -63,9 +63,9 @@ node {
 /****************************** Stage that creates lock variable and SonarQube variable ******************************/
 		stage ('Reading Branch Varibles ')	{
 			Reason = "lock_resource_name stage Failed"
-			JobName = env.JOB_NAME
+			/* JobName = env.JOB_NAME
 			def branch_name1 = properties.branch_name
-			/*if(env.BRANCH_NAME.startsWith('PR-'))	//if(JobName.contains('PR-'))
+			if(env.BRANCH_NAME.startsWith('PR-'))	//if(JobName.contains('PR-'))
 			{
 				def index = env.JOB_NAME.indexOf("/");
 				lock_resource_name = env.JOB_NAME.substring(0 , index)+"_"+"${branch_name1}"
