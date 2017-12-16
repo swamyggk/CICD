@@ -91,7 +91,7 @@ node {
 				def mvn_version = tool 'maven'
 				echo "${mvn_version}"
 				withEnv( ["PATH+MAVEN=${mvn_version}/bin"] ) {
-					buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install -Dmaven.test.skip=true $SONAR_MAVEN_GOAL -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.projectKey="$Sonar_project_name" -Dsonar.projectName="$Sonar_project_name"'
+					buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install -Dmaven.test.skip=true' //$SONAR_MAVEN_GOAL -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.projectKey="$Sonar_project_name" -Dsonar.projectName="$Sonar_project_name"'
 				}
 			}*/
 		}
@@ -129,7 +129,7 @@ node {
 					}*/			
 					// ***** Stage for Publishing Docker images ***** //							
 					stage ('Publish Docker Images'){
-						Reason = "Publish Docker Images Failed"
+						/*Reason = "Publish Docker Images Failed"
 						def cp_index = properties.cp_image_name.indexOf(":");								
 						def cpImageName = properties.cp_image_name.substring(0 , cp_index)+":latest"
 						def om_index = properties.om_image_name.indexOf(":");
@@ -152,7 +152,7 @@ node {
 							}
 							sh """docker logout"""
 							
-					}
+					}*/
 				
 					// ***** Stage for triggering CD pipeline ***** //				
 					/*stage ('Starting ART job') {
