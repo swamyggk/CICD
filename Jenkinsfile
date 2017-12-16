@@ -68,6 +68,8 @@ node {
             Sonar_project_name = "testinglock2_latest"
             lockVar = "testinglock2_latest"
             def BRANCH_NAME = "latest"
+            sh """ echo $JOB_NAME
+            """
 			// JobName = env.JOB_NAME
 			def branch_name1 = properties.branch_name
 			if(BRANCH_NAME.startsWith('PR-'))	//if(JobName.contains('PR-'))
