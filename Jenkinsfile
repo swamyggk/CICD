@@ -21,10 +21,10 @@ emailext (
 	<h1><FONT COLOR=Green>$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS</FONT></h1><h2 style=\'color:#e46c0a\'>GitHub Details</h2>
 	<B>${BUILD_LOG_REGEX, regex="Started by ", linesBefore=0, linesAfter=1, maxMatches=1, showTruncatedLines=false, escapeHtml=true}<br>
 	${BUILD_LOG_REGEX, regex="Checking out Revision", linesBefore=0, linesAfter=1, maxMatches=1, showTruncatedLines=false, escapeHtml=true}</B>
-	<p><!-- ${SCRIPT, template="unit_test_results.groovy"} --></p>
-	<p><br><br>${SCRIPT, template="sonarqube_template.groovy"}<br></p>
-	<p><br><br><br><br><br><br><br><h2 style=\'color:#e46c0a; font-family: Candara;\'>Artifactory Details</h2>
-	<b style=\'font-family: Candara;\'>${BUILD_LOG_REGEX, regex="http://padlcicdggk4.sw.fortna.net:8088/artifactory/webapp/*", linesBefore=0, linesAfter=0, maxMatches=1, showTruncatedLines=false, escapeHtml=true}<b></p>
+	//<p><!-- ${SCRIPT, template="unit_test_results.groovy"} --></p>
+	//<p><br><br>${SCRIPT, template="sonarqube_template.groovy"}<br></p>
+	//<p><br><br><br><br><br><br><br><h2 style=\'color:#e46c0a; font-family: Candara;\'>Artifactory Details</h2>
+	//<b style=\'font-family: Candara;\'>${BUILD_LOG_REGEX, regex="http://padlcicdggk4.sw.fortna.net:8088/artifactory/webapp/*", linesBefore=0, linesAfter=0, maxMatches=1, showTruncatedLines=false, escapeHtml=true}<b></p>
 	<p><br><br>${SCRIPT, template="robotframework_template.groovy"}</p>
 	<p><br><br><br><br><br><br><br><h2><a href="$BUILD_URL">Click Here</a> to view build result</h2><br><h3>Please find below, the build logs and other files.</h3></p>
 	</span>''', subject: '$DEFAULT_SUBJECT', to: 'yerriswamy.konanki@ggktech.com, sunil.boga@ggktech.com, sneha.kailasa@ggktech.com'
@@ -99,21 +99,21 @@ node {
 /****************************** Docker Compose and Robot Framework testing on container ******************************/
 		stage ('Docker Deploy and RFW') {
 			Reason = "Docker Deployment or Robot Framework Test cases Failed"
-			lock(lockVar) {
+			lock('test') {
 				// Docker Compose starts // 
-				sh "jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d"
-				sh "sudo chmod 777 wait_for_robot.sh "
-				println "wait_for_robot"
-				sh './wait_for_robot.sh'
-				robot_result_folder = properties.robot_result_folder
-				sh 'echo /home/robot/${robot_result_folder}/report.html'
+				//sh "jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d"
+				//sh "sudo chmod 777 wait_for_robot.sh "
+				//println "wait_for_robot"
+				//sh './wait_for_robot.sh'
+				//robot_result_folder = properties.robot_result_folder
+				//sh 'echo /home/robot/${robot_result_folder}/report.html'
 					step([$class: 'RobotPublisher',
 					outputPath: "/home/robot/results",
 					passThreshold: 0,
 					unstableThreshold: 0,
 					otherFiles: ""])
 				// If Robot Framework test case fails, then the build will be failed //	
-				if("${currentBuild.result}" == "FAILURE")
+				/*if("${currentBuild.result}" == "FAILURE")
 					 {	
 						 sh ''' ./clean_up.sh
 						 exit 1'''
@@ -122,14 +122,14 @@ node {
 				if(!(JobName.contains('PR-')))
 				{
 					 // ***** Stage for Deploying artifacts to Artifactory ***** //				
-					/*stage ('Artifacts Deployment'){		
+					stage ('Artifacts Deployment'){		
 						Reason = "Artifacts Deployment Failed"
 						rtMaven.deployer.deployArtifacts buildInfo
 						server.publishBuildInfo buildInfo
-					}*/			
+					}		
 					// ***** Stage for Publishing Docker images ***** //							
 					stage ('Publish Docker Images'){
-						/*Reason = "Publish Docker Images Failed"
+						Reason = "Publish Docker Images Failed"
 						def cp_index = properties.cp_image_name.indexOf(":");								
 						def cpImageName = properties.cp_image_name.substring(0 , cp_index)+":latest"
 						def om_index = properties.om_image_name.indexOf(":");
@@ -151,17 +151,17 @@ node {
 								customImage4.push()
 							}
 							sh """docker logout"""
-					*/		
+					
 					}
 				
 					// ***** Stage for triggering CD pipeline ***** //				
-					/*stage ('Starting ART job') {
+					stage ('Starting ART job') {
 					Reason = "Trriggering downStream Job Failed"
                     Job_name = Sonar_project_name + "QA"
 		   			 	build job: Job_name//, parameters: [[$class: 'StringParameterValue', name: 'var1', value: 'var1_value']]
-					} */
+					} 
 				}
-				sh './clean_up.sh'
+				sh './clean_up.sh'	*/
 			}				
 		}							// Docker Deployment and RFW stage ends here //
 
@@ -186,9 +186,9 @@ node {
 			// Interactive promotion of Builds in Artifactory server from Jenkins UI //
 			Artifactory.addInteractivePromotion server: server, promotionConfig: promotionConfig, displayName: "Promotions Time" //this need human interaction to promote
 		}
-	*/
-/****************************** Stage for creating reports for SonarQube Analysis ******************************/
-		/*stage ('Reports creation') {
+	
+/****************************** Stage for creating reports for SonarQube Analysis ******************************
+		stage ('Reports creation') {
 			Reason = "Reports creation Failed"
 			sh '''sleep 15s
 			curl "http://10.240.17.12:9000/sonar/api/resources?resource=$JOB_NAME&metrics=bugs,vulnerabilities,code_smells,duplicated_blocks" > output.json
