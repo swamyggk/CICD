@@ -9,3 +9,4 @@ do
   sleep 5s;
   Container_status=`docker ps | grep "$robot_container_name"`
 done;
+echo "connected"
