@@ -102,7 +102,8 @@ node {
 			//properties.load(contents)
 			def branch_name1 = properties.branch_name
 			println "${BRANCH_NAME}"
-			if(jobName.contains('PR-'))
+			//if(jobName.contains('PR-'))
+			if(!env.BRANCH_NAME.startsWith('PR-))
 			{
 				def index = jobName.indexOf("/");
 				lock_resource_name = jobName.substring(0 , index)+"_"+"${branch_name1}"
