@@ -97,6 +97,7 @@ node {
 		lock('Compose-resource-lock') {
 		Reason = "lock_resource_name stage Failed"
 			jobName = "${JOB_NAME}"
+			properties.load(contents)
 			def branch_name1 = properties.branch_name
 			if(jobName.contains('PR-'))
 			{
