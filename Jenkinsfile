@@ -62,13 +62,13 @@ node {
 
 /****************************** Stage that creates lock variable and SonarQube variable ******************************/
 		stage ('Reading Branch Varibles ')	{
-			sh """ echo ${BRANCH_NAME} """
+			//sh """ echo ${BRANCH_NAME} """
             Reason = "lockVar stage Failed"
             JobName = "testinglock2/latest"
             Sonar_project_name = "testinglock2_latest"
             lockVar = "testinglock2_latest"
             def BRANCH_NAME = "latest"
-           	// JobName = env.JOB_NAME
+           	JobName = $JOB_NAME
 			def branch_name1 = properties.branch_name
 			if(BRANCH_NAME.startsWith('PR-'))	//if(JobName.contains('PR-'))
 			{
