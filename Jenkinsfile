@@ -1,4 +1,4 @@
-/****************************** Environment variables ******************************/
+/****************************** Environment variables ******************************/ 
 def JobName									// variable to get jobname 
 def Sonar_project_name							// varibale passed as SonarQube parameter while building the application
 def robot_result_folder = ""				// variable used to store Robot Framework test results
