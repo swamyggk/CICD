@@ -1,5 +1,5 @@
 /****************************** Environment variables ******************************/ 
-def JobName									// variable to get jobname 
+def jobName									// variable to get jobName 
 def Sonar_project_name							// varibale passed as SonarQube parameter while building the application
 def robot_result_folder = ""				// variable used to store Robot Framework test results
 def server = Artifactory.server 'server1'	// Artifactory server instance declaration. 'server1' is the Server ID given to Artifactory server in Jenkins
@@ -96,19 +96,18 @@ node {
 	/*******Locking Resource ********/
 		lock('Compose-resource-lock') {
 		Reason = "lock_resource_name stage Failed"
-			JobName = "${JOB_NAME}"
+			jobName = "${JOB_NAME}"
 			def branch_name1 = properties.branch_name
-			println "${branch_name1}" 
-			if(JobName.contains('PR-'))
+			if(jobName.contains('PR-'))
 			{
-				def index = JobName.indexOf("/");
-				lock_resource_name = JobName.substring(0 , index)+"_"+"${branch_name1}"
+				def index = jobName.indexOf("/");
+				lock_resource_name = jobName.substring(0 , index)+"_"+"${branch_name1}"
 				Sonar_project_name = lock_resource_name + "PR" 
 			}
 			else
 			{
-				 def index = JobName.indexOf("/");
-				 Sonar_project_name = JobName.substring(0 , index)+"_"+"${BRANCH_NAME}"
+				 def index = jobName.indexOf("/");
+				 Sonar_project_name = jobName.substring(0 , index)+"_"+"${BRANCH_NAME}"
 				 lock_resource_name = Sonar_project_name
 			}
 		/*************** Docker Compose ***************/
