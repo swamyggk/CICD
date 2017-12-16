@@ -102,7 +102,7 @@ node {
 			//properties.load(contents)
 			def branch_name1 = properties.branch_name
 			println "${BRANCH_NAME}"
-			//if(jobName.contains('PR-'))
+			/*if(jobName.contains('PR-'))
 			if(!env.BRANCH_NAME.startsWith('PR-')) 
 			{
 				def index = jobName.indexOf("/");
@@ -114,7 +114,7 @@ node {
 				 def index = jobName.indexOf("/");
 				 Sonar_project_name = jobName.substring(0 , index)+"_"+"${BRANCH_NAME}";
 				 lock_resource_name = Sonar_project_name;
-			}
+			}*/
 		/*************** Docker Compose ***************/
 		sh ''' username=${BRANCH_NAME} /usr/local/bin/docker-compose up -d
 			./clean_up.sh'''
