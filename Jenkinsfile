@@ -62,7 +62,7 @@ node {
 
 /****************************** Stage that creates lock variable and SonarQube variable ******************************/
 		stage ('Reading Branch Varibles ')	{
-			//sh """ echo ${BRANCH_NAME} """
+			sh 'env'
             Reason = "lockVar stage Failed"
             JobName = "testinglock2/latest"
             Sonar_project_name = "testinglock2_latest"
@@ -105,7 +105,7 @@ node {
 /****************************** Docker Compose and Robot Framework testing on container ******************************/
 		stage ('Docker Deploy and RFW') {
 			Reason = "Docker Deployment or Robot Framework Test cases Failed"
-			lock('lock_resource') {
+			lock(lockVar) {
 				// Docker Compose starts // 
 				//sh "jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d"
 				//sh "sudo chmod 777 wait_for_robot.sh "
