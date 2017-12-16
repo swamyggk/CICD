@@ -73,6 +73,7 @@ node {
     script: 'echo ${JOB_NAME}|cut -d"/" -f 1',
     returnStdout: true
 )+"_"+"${branch_name1}"
+				println lock_resource_name
 				Sonar_project_name = lock_resource_name + "PR" 
 			}
 			else
@@ -83,6 +84,7 @@ node {
     script: 'echo ${JOB_NAME}|cut -d"/" -f 1',
     returnStdout: true
 )+"_"+env.BRANCH_NAME
+				 println Sonar_project_name
 				 lock_resource_name = Sonar_project_name
 			} 
 		}
