@@ -102,6 +102,7 @@ node {
 			lock(lockVar) {
 				// Docker Compose starts // 
 				sh "jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d"
+				sh './wait_for_robot.sh'
 				robot_result_folder = properties.robot_result_folder
 				println robot_result_folder
 				println properties.robot_result_folder
