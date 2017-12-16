@@ -56,6 +56,31 @@ node {
 			Reason = "GIT Checkout Failed"
 			checkout scm				
 		}
+		
+// assigning the jarname to this variable aquired from pom.xml by below function //
+		def jar_name = getMavenBuildArtifactName()
+
+/****************************** Stage that creates lock variable and SonarQube variable ******************************/
+		stage ('Reading Branch Varibles ')	{
+			Reason = "lock_resource_name stage Failed"
+			JobName = "${JOB_NAME}"
+			def branch_name1 = properties.branch_name
+			println "${branch_name1}" 
+			if(JobName.contains('PR-'))
+			{
+				def index = JobName.indexOf("/");
+				lock_resource_name = JobName.substring(0 , index)+"_"+"${branch_name1}"
+				Sonar_project_name = lock_resource_name + "PR" 
+			}
+			else
+			{
+				 def index = JobName.indexOf("/");
+				 Sonar_project_name = JobName.substring(0 , index)+"_"+"${BRANCH_NAME}"
+				 lock_resource_name = Sonar_project_name
+			}
+		}
+
+		
 	/*************** Building the application ***************/
 	stage ('Maven Build') {
 	
