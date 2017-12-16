@@ -70,12 +70,14 @@ node {
 				def index = env.JOB_NAME.indexOf("/");
 				lock_resource_name = env.JOB_NAME.substring(0 , index)+"_"+"${branch_name1}"
 				Sonar_project_name = lock_resource_name + "PR" 
+				println index; println lock_resource_name; println Sonar_project_name;
 			}
 			else
 			{
 				 def index = env.JOB_NAME.indexOf("/");
 				 Sonar_project_name = env.JOB_NAME.substring(0 , index)+"_"+env.BRANCH_NAME
 				 lock_resource_name = Sonar_project_name
+				 println index; println lock_resource_name; println Sonar_project_name;
 			} 
 		}
 	
