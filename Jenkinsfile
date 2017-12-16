@@ -88,11 +88,6 @@ node {
 		/*************** Docker Compose ***************/
 		sh ''' username=${BRANCH_NAME} /usr/local/bin/docker-compose up -d
 			./clean_up.sh'''
-			def content = readFile './.env'
-  			Properties properties = new Properties()
-  			InputStream contents = new ByteArrayInputStream(content.getBytes());
-  			properties.load(contents)
-  			contents = null
 			robot_result_folder = properties.robot_result_folder
 			step([$class: 'RobotPublisher',
 				outputPath: "/home/robot/${robot_result_folder}",
