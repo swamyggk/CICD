@@ -103,6 +103,8 @@ node {
 				// Docker Compose starts // 
 				sh "jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d"
 				robot_result_folder = properties.robot_result_folder
+				println robot_result_folder
+				println properties.robot_result_folder
 				step([$class: 'RobotPublisher',
 					outputPath: "/home/robot/${robot_result_folder}",
 					passThreshold: 0,
