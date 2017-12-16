@@ -110,8 +110,8 @@ node {
 				println properties.robot_result_folder
 				step([$class: 'RobotPublisher',
 					outputPath: "/home/robot/${robot_result_folder}",
-					passThreshold: 50,
-					unstableThreshold: 50,
+					passThreshold: 0,
+					unstableThreshold: 0,
 					otherFiles: ""])
 				// If Robot Framework test case fails, then the build will be failed //	
 				if("${currentBuild.result}" == "FAILURE")
