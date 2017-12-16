@@ -1,5 +1,5 @@
 /****************************** Environment variables ******************************/ 
-def JobName	= env.JOB_NAME 							// variable to get jobname 
+def JobName	= null						// variable to get jobname 
 def Sonar_project_name = null 							// varibale passed as SonarQube parameter while building the application
 def robot_result_folder = null 				// variable used to store Robot Framework test results
 def server = Artifactory.server 'server1'	// Artifactory server instance declaration. 'server1' is the Server ID given to Artifactory server in Jenkins
@@ -64,10 +64,10 @@ node {
 		stage ('Reading Branch Varibles ')	{
 			
             Reason = "lockVar stage Failed"
-            //JobName = JOB_NAME
+            JobName = "testinglock2/latest"
             Sonar_project_name = "testinglock2_latest"
             lockVar = "testinglock2_latest"
-			/* JobName = env.JOB_NAME
+			// JobName = env.JOB_NAME
 			def branch_name1 = properties.branch_name
 			if(env.BRANCH_NAME.startsWith('PR-'))	//if(JobName.contains('PR-'))
 			{
@@ -82,7 +82,7 @@ node {
 				 Sonar_project_name = env.JOB_NAME.substring(0 , index)+"_"+env.BRANCH_NAME
 				 lock_resource_name = Sonar_project_name
 				 println index; println lock_resource_name; println Sonar_project_name;
-			} */
+			} 
 		}
 	
 /****************************** Building the Application and performing SonarQube analysis ******************************/	
