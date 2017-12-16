@@ -151,11 +151,11 @@ node {
 					}
 				
 					// ***** Stage for triggering CD pipeline ***** //				
-					stage ('Starting ART job') {
+					/*stage ('Starting ART job') {
 					Reason = "Trriggering downStream Job Failed"
                     Job_name = Sonar_project_name + "QA"
 		   			 	build job: Job_name//, parameters: [[$class: 'StringParameterValue', name: 'var1', value: 'var1_value']]
-					} 
+					} */
 				}
 				sh './clean_up.sh'
 			}				
