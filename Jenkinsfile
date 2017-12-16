@@ -1,6 +1,6 @@
 /****************************** Environment variables ******************************/
 def JobName									// variable to get jobname 
-def SonarHostName							// varibale passed as SonarQube parameter while building the application
+def Sonar_project_name							// varibale passed as SonarQube parameter while building the application
 def robot_result_folder = ""				// variable used to store Robot Framework test results
 def server = Artifactory.server 'server1'	// Artifactory server instance declaration. 'server1' is the Server ID given to Artifactory server in Jenkins
 def buildInfo								// variable to store build info which is used by Artifactory
@@ -61,7 +61,7 @@ node {
 		def jar_name = getMavenBuildArtifactName()
 
 /****************************** Stage that creates lock variable and SonarQube variable ******************************/
-		stage ('lockVar')	{
+		stage ('Reading Branch Varibles ')	{
 			Reason = "lockVar stage Failed"
 			JobName = "${JOB_NAME}"
 			def branch_name1 = properties.branch_name
@@ -70,13 +70,13 @@ node {
 			{
 				def index = JobName.indexOf("/");
 				lockVar = JobName.substring(0 , index)+"_"+"${branch_name1}"
-				SonarHostName = lockVar + "PR" 
+				Sonar_project_name = lockVar + "PR" 
 			}
 			else
 			{
 				 def index = JobName.indexOf("/");
-				 SonarHostName = JobName.substring(0 , index)+"_"+"${BRANCH_NAME}"
-				 lockVar = SonarHostName
+				 Sonar_project_name = JobName.substring(0 , index)+"_"+"${BRANCH_NAME}"
+				 lockVar = Sonar_project_name
 			}
 		}
 	
@@ -87,13 +87,13 @@ node {
 			rtMaven.deployer.deployArtifacts = false																//this will not publish artifacts soon after build succeeds	//
 			rtMaven.tool = 'maven'																					//Defining maven tool //
 			// Maven build starts here //
-			//withSonarQubeEnv {
+			withSonarQubeEnv {
 				def mvn_version = tool 'maven'
 				echo "${mvn_version}"
 				withEnv( ["PATH+MAVEN=${mvn_version}/bin"] ) {
-					buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install -Dmaven.test.skip=true' //$SONAR_MAVEN_GOAL -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.projectKey="$SonarHostName" -Dsonar.projectName="$SonarHostName"'
+					buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install -Dmaven.test.skip=true $SONAR_MAVEN_GOAL -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.projectKey="$Sonar_project_name" -Dsonar.projectName="$Sonar_project_name"'
 				}
-			//}
+			}
 		}
 
 /****************************** Docker Compose and Robot Framework testing on container ******************************/
@@ -117,14 +117,14 @@ node {
 				// If it is a GitHub PR job, then this part doesn't execute //					 
 				if(!(JobName.contains('PR-')))
 				{
-					/* / ***** Stage for Deploying artifacts to Artifactory ***** //				
+					 // ***** Stage for Deploying artifacts to Artifactory ***** //				
 					stage ('Artifacts Deployment'){		
 						Reason = "Artifacts Deployment Failed"
 						rtMaven.deployer.deployArtifacts buildInfo
 						server.publishBuildInfo buildInfo
-					}	*/		
+					}			
 					// ***** Stage for Publishing Docker images ***** //							
-				/*	stage ('Publish Docker Images'){
+					stage ('Publish Docker Images'){
 						Reason = "Publish Docker Images Failed"
 						def cp_index = properties.cp_image_name.indexOf(":");								
 						def cpImageName = properties.cp_image_name.substring(0 , cp_index)+":latest"
@@ -148,20 +148,21 @@ node {
 							}
 							sh """docker logout"""
 							
-					}*/
+					}
 				
-					/* / ***** Stage for triggering CD pipeline ***** //				
+					// ***** Stage for triggering CD pipeline ***** //				
 					stage ('Starting ART job') {
-					Reason = "DownStream Job Failed"
-		   			 	build job: 'Docker_registry' //,parameters: [[$class: 'StringParameterValue', name: 'var1', value: 'var1_value']]
-					} */
+					Reason = "Trriggering downStream Job Failed"
+                    Job_name = Sonar_project_name + "QA"
+		   			 	build job: Job_name//, parameters: [[$class: 'StringParameterValue', name: 'var1', value: 'var1_value']]
+					} 
 				}
 				sh './clean_up.sh'
-			}						// lock will be released here //
+			}				
 		}							// Docker Deployment and RFW stage ends here //
 
-/****************************** Stage for Deploying artifacts to Artifactory ******************************
-		stage ('Build Promotions') {
+/****************************** Stage for artifacts promotion ******************************/
+	/*	stage ('Build Promotions') {
 			Reason = "Build Promotions Failed"
 			def promotionConfig = [
 				// Mandatory parameters
@@ -181,14 +182,14 @@ node {
 			// Interactive promotion of Builds in Artifactory server from Jenkins UI //
 			Artifactory.addInteractivePromotion server: server, promotionConfig: promotionConfig, displayName: "Promotions Time" //this need human interaction to promote
 		}
-	
-/****************************** Stage for creating reports for SonarQube Analysis ******************************
+	*/
+/****************************** Stage for creating reports for SonarQube Analysis ******************************/
 		stage ('Reports creation') {
 			Reason = "Reports creation Failed"
 			sh '''sleep 15s
 			curl "http://10.240.17.12:9000/sonar/api/resources?resource=$JOB_NAME&metrics=bugs,vulnerabilities,code_smells,duplicated_blocks" > output.json
 			sleep 10s'''
-		}*/
+		}
 
 /****************************** Stage for sending Email Notifications when Build succeeds ******************************/	
 		stage ('Email Notifications') {
