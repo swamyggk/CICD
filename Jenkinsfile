@@ -65,7 +65,7 @@ node {
 			Reason = "lock_resource_name stage Failed"
 			//JobName = env.JOB_NAME
 			//def branch_name1 = properties.branch_name
-			if(env.BRANCH_NAME.startsWith('PR-'))	//if(JobName.contains('PR-'))
+			/*if(env.BRANCH_NAME.startsWith('PR-'))	//if(JobName.contains('PR-'))
 			{
 				def index = env.JOB_NAME.indexOf("/");
 				lock_resource_name = env.JOB_NAME.substring(0 , index)+"_"+"${branch_name1}"
@@ -78,7 +78,7 @@ node {
 				 Sonar_project_name = env.JOB_NAME.substring(0 , index)+"_"+env.BRANCH_NAME
 				 lock_resource_name = Sonar_project_name
 				 println index; println lock_resource_name; println Sonar_project_name;
-			} 
+			} */
 		}
 	
 /****************************** Building the Application and performing SonarQube analysis ******************************/	
@@ -100,7 +100,7 @@ node {
 /****************************** Docker Compose and Robot Framework testing on container ******************************/
 		stage ('Docker Deploy and RFW') {
 			Reason = "Docker Deployment or Robot Framework Test cases Failed"
-			lock(lock_resource_name) {
+			lock('lock_resource') {
 				// Docker Compose starts // 
 				//sh "jarfile_name=${jar_name} /usr/local/bin/docker-compose up -d"
 				//sh "sudo chmod 777 wait_for_robot.sh "
