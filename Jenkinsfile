@@ -107,12 +107,7 @@ node {
 				//sh './wait_for_robot.sh'
 				//robot_result_folder = properties.robot_result_folder
 				//sh 'echo /home/robot/${robot_result_folder}/report.html'
-					content = readFile './.env'				// variable to store .env file contents
-					properties = new Properties()	// creating an object for Properties class
-					contents = new ByteArrayInputStream(content.getBytes());	// storing the contents
-					properties.load(contents)	
-					contents = null
-					step([$class: 'RobotPublisher',
+				step([$class: 'RobotPublisher',
 					outputPath: "/home/robot/results",
 					passThreshold: 0,
 					unstableThreshold: 0,
