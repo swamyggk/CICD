@@ -67,19 +67,20 @@ node {
             JobName = "testinglock2/latest"
             Sonar_project_name = "testinglock2_latest"
             lockVar = "testinglock2_latest"
+            def BRANCH_NAME = "latest"
 			// JobName = env.JOB_NAME
 			def branch_name1 = properties.branch_name
-			if(env.BRANCH_NAME.startsWith('PR-'))	//if(JobName.contains('PR-'))
+			if(BRANCH_NAME.startsWith('PR-'))	//if(JobName.contains('PR-'))
 			{
-				def index = env.JOB_NAME.indexOf("/");
-				lock_resource_name = env.JOB_NAME.substring(0 , index)+"_"+"${branch_name1}"
+				def index = JobName.indexOf("/");
+				lock_resource_name = JobName.substring(0 , index)+"_"+"${branch_name1}"
 				Sonar_project_name = lock_resource_name + "PR" 
 				println index; println lock_resource_name; println Sonar_project_name;
 			}
 			else
 			{
-				 def index = env.JOB_NAME.indexOf("/");
-				 Sonar_project_name = env.JOB_NAME.substring(0 , index)+"_"+env.BRANCH_NAME
+				 def index = JobName.indexOf("/");
+				 Sonar_project_name = JobName.substring(0 , index)+"_"+BRANCH_NAME
 				 lock_resource_name = Sonar_project_name
 				 println index; println lock_resource_name; println Sonar_project_name;
 			} 
