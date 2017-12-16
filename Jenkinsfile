@@ -64,7 +64,7 @@ node {
 		stage ('Reading Branch Varibles ')	{
 			
             Reason = "lockVar stage Failed"
-            JobName = ${JOB_NAME}
+            JobName = JOB_NAME
             Sonar_project_name = "testinglock2_latest"
             lockVar = "testinglock2_latest"
 			/* JobName = env.JOB_NAME
