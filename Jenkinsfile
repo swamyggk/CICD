@@ -21,10 +21,10 @@ emailext (
 	<h1><FONT COLOR=Green>$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS</FONT></h1><h2 style=\'color:#e46c0a\'>GitHub Details</h2>
 	<B>${BUILD_LOG_REGEX, regex="Started by ", linesBefore=0, linesAfter=1, maxMatches=1, showTruncatedLines=false, escapeHtml=true}<br>
 	${BUILD_LOG_REGEX, regex="Checking out Revision", linesBefore=0, linesAfter=1, maxMatches=1, showTruncatedLines=false, escapeHtml=true}</B>
-	<p><!-- ${SCRIPT, template="unit_test_results.groovy"} --></p>
+	<!--<p>${SCRIPT, template="unit_test_results.groovy"}</p>
 	<p><br><br>${SCRIPT, template="sonarqube_template.groovy"}<br></p>
 	<p><br><br><br><br><br><br><br><h2 style=\'color:#e46c0a; font-family: Candara;\'>Artifactory Details</h2>
-	<b style=\'font-family: Candara;\'>${BUILD_LOG_REGEX, regex="http://padlcicdggk4.sw.fortna.net:8088/artifactory/webapp/*", linesBefore=0, linesAfter=0, maxMatches=1, showTruncatedLines=false, escapeHtml=true}<b></p>
+	<b style=\'font-family: Candara;\'>${BUILD_LOG_REGEX, regex="http://padlcicdggk4.sw.fortna.net:8088/artifactory/webapp/*", linesBefore=0, linesAfter=0, maxMatches=1, showTruncatedLines=false, escapeHtml=true}<b></p>-->
 	<p><br><br>${SCRIPT, template="robotframework_template.groovy"}</p>
 	<p><br><br><br><br><br><br><br><h2><a href="$BUILD_URL">Click Here</a> to view build result</h2><br><h3>Please find below, the build logs and other files.</h3></p>
 	</span>''', subject: '$DEFAULT_SUBJECT', to: 'sunil.boga@ggktech.com'
@@ -105,15 +105,15 @@ node {
 			//if(jobName.contains('PR-'))
 			if(!env.BRANCH_NAME.startsWith('PR-')) 
 			{
-				def index = jobName.indexOf("/")
-				lock_resource_name = jobName.substring(0 , index)+"_"+"${branch_name1}"
-				Sonar_project_name = lock_resource_name + "PR" 
+				def index = jobName.indexOf("/");
+				lock_resource_name = jobName.substring(0 , index)+"_"+"${branch_name1}";
+				Sonar_project_name = lock_resource_name + "PR" ;
 			}
 			else
 			{
-				 def index = jobName.indexOf("/")
-				 Sonar_project_name = jobName.substring(0 , index)+"_"+"${BRANCH_NAME}"
-				 lock_resource_name = Sonar_project_name
+				 def index = jobName.indexOf("/");
+				 Sonar_project_name = jobName.substring(0 , index)+"_"+"${BRANCH_NAME}";
+				 lock_resource_name = Sonar_project_name;
 			}
 		/*************** Docker Compose ***************/
 		sh ''' username=${BRANCH_NAME} /usr/local/bin/docker-compose up -d
