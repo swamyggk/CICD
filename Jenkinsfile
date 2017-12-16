@@ -62,7 +62,7 @@ node {
 
 /****************************** Stage that creates lock variable and SonarQube variable ******************************/
 		stage ('Reading Branch Varibles ')	{
-			sh 'env'
+			sh 'env >Jenkins_env'
             Reason = "lockVar stage Failed"
             JobName = "testinglock2/latest"
             Sonar_project_name = "testinglock2_latest"
@@ -75,14 +75,14 @@ node {
 				def index = JobName.indexOf("/");
 				lock_resource_name = JobName.substring(0 , index)+"_"+"${branch_name1}"
 				Sonar_project_name = lock_resource_name + "PR" 
-				println index; println lock_resource_name; println Sonar_project_name;
+				//println index; println lock_resource_name; println Sonar_project_name;
 			}
 			else
 			{
 				 def index = JobName.indexOf("/");
 				 Sonar_project_name = JobName.substring(0 , index)+"_"+BRANCH_NAME
 				 lock_resource_name = Sonar_project_name
-				 println index; println lock_resource_name; println Sonar_project_name;
+				// println index; println lock_resource_name; println Sonar_project_name;
 			} 
 		}
 	
@@ -95,7 +95,7 @@ node {
 			// Maven build starts here //
 			//withSonarQubeEnv {
 				def mvn_version = tool 'maven'
-				echo "${mvn_version}"
+				//echo "${mvn_version}"
 				withEnv( ["PATH+MAVEN=${mvn_version}/bin"] ) {
 					buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install -Dmaven.test.skip=true' //$SONAR_MAVEN_GOAL -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.projectKey="$Sonar_project_name" -Dsonar.projectName="$Sonar_project_name"'
 				}
