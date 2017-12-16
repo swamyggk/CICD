@@ -106,10 +106,8 @@ node {
 				println "wait_for_robot"
 				sh './wait_for_robot.sh'
 				robot_result_folder = properties.robot_result_folder
-				println robot_result_folder
-				println properties.robot_result_folder
 				step([$class: 'RobotPublisher',
-					outputPath: "/home/robot/${robot_result_folder}",
+					outputPath: "/home/robot/results",
 					passThreshold: 0,
 					unstableThreshold: 0,
 					otherFiles: ""])
