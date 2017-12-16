@@ -105,13 +105,13 @@ node {
 			//if(jobName.contains('PR-'))
 			if(!env.BRANCH_NAME.startsWith('PR-')) 
 			{
-				def index = jobName.indexOf("/");
+				def index = jobName.indexOf("/")
 				lock_resource_name = jobName.substring(0 , index)+"_"+"${branch_name1}"
 				Sonar_project_name = lock_resource_name + "PR" 
 			}
 			else
 			{
-				 def index = jobName.indexOf("/");
+				 def index = jobName.indexOf("/")
 				 Sonar_project_name = jobName.substring(0 , index)+"_"+"${BRANCH_NAME}"
 				 lock_resource_name = Sonar_project_name
 			}
