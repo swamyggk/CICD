@@ -62,7 +62,7 @@ node {
 
 /****************************** Stage that creates lock variable and SonarQube variable ******************************/
 		stage ('Reading Branch Varibles ')	{
-			sh ''' echo ${env.BRANCH_NAME} '''
+			sh """ echo ${env.BRANCH_NAME} """
             Reason = "lockVar stage Failed"
             JobName = "testinglock2/latest"
             Sonar_project_name = "testinglock2_latest"
