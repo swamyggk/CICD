@@ -30,7 +30,7 @@ emailext (
  </span>''', subject: '$DEFAULT_SUBJECT', to: 'yerriswamy.konanki@ggktech.com, sunil.boga@ggktech.com'
  )
 }
-
+ 
 // Email Notifications template when Build fails //
 def notifyFailure(def Reason){
 println "Failed Reason: ${Reason}"
